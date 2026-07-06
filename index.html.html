@@ -1,0 +1,944 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap');
+:root{--pd:#3d1a6e;--pm:#6b21a8;--pl:#9333ea;--pp:#f3e8ff;--ym:#eab308;--yl:#fef08a;--yp:#fefce8;--td:#1e1b4b;--tg:#6b7280;--bg:#f5f0ff;--wh:#ffffff;--br:#e9d5ff;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--td);display:flex;min-height:100vh;font-size:16px;}
+/* Sidebar */
+.sb{width:210px;background:linear-gradient(180deg,var(--pd) 0%,var(--pm) 100%);min-height:100vh;position:fixed;left:0;top:0;display:flex;flex-direction:column;z-index:200;box-shadow:4px 0 24px rgba(61,26,110,.35);}
+.sb-logo{padding:20px 16px 18px;border-bottom:1px solid rgba(255,255,255,.12);text-align:center;}
+.sb-logo .li{width:46px;height:46px;background:var(--ym);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:22px;}
+.sb-logo .lt{color:#fff;font-size:13px;font-weight:600;line-height:1.5;}
+.sb-nav{padding:16px 10px;flex:1;}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:9px;color:rgba(255,255,255,.7);cursor:pointer;margin-bottom:3px;font-size:14px;font-weight:500;transition:all .2s;border:none;background:none;width:100%;text-align:left;}
+.ni:hover{background:rgba(255,255,255,.13);color:#fff;}
+.ni.active{background:var(--ym);color:var(--pd);font-weight:700;}
+.ni .ic{font-size:17px;flex-shrink:0;}
+.sb-foot{padding:14px 16px;border-top:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);font-size:12px;text-align:center;}
+/* Main */
+.mn{margin-left:210px;flex:1;padding:20px;min-width:0;}
+/* Header */
+.hd{background:linear-gradient(135deg,#1e1040 0%,#2d1060 50%,#3b1580 100%);border-radius:16px;padding:28px 32px 24px;margin-bottom:16px;color:#fff;position:relative;overflow:hidden;}
+.hd::before{content:'';position:absolute;top:0;right:0;width:320px;height:100%;background:radial-gradient(ellipse at top right,rgba(234,179,8,.08) 0%,transparent 70%);pointer-events:none;}
+.hd::after{content:'';position:absolute;bottom:-60px;left:40%;width:200px;height:200px;background:rgba(255,255,255,.03);border-radius:50%;pointer-events:none;}
+.hd-tag{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--ym);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.hd-tag::before{content:'';width:18px;height:2px;background:var(--ym);border-radius:1px;}
+.hd-row1{font-size:26px;font-weight:800;margin-bottom:6px;line-height:1.2;position:relative;letter-spacing:-.3px;}
+.hd-row1 .month-highlight{color:var(--ym);}
+.hd-row2{font-size:15px;font-weight:400;margin-bottom:2px;opacity:.8;position:relative;display:flex;align-items:center;gap:8px;}
+.hd-row2 .dot{opacity:.4;font-size:12px;}
+.hd-row3{font-size:12px;opacity:.5;margin-bottom:0;position:relative;}
+.hd-sels{display:flex;gap:8px;flex-wrap:wrap;position:relative;}
+.hd-controls{position:absolute;top:22px;right:24px;display:flex;flex-direction:column;align-items:flex-end;gap:10px;z-index:10;}
+.hd-selrow{display:flex;align-items:center;gap:8px;}
+.hd-sellabel{font-size:11px;color:rgba(255,255,255,.5);font-weight:600;letter-spacing:.5px;}
+.hsel{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:7px 12px;border-radius:8px;font-family:'Sarabun',sans-serif;font-size:13px;cursor:pointer;backdrop-filter:blur(8px);transition:background .2s;}
+.hsel:hover{background:rgba(255,255,255,.18);}
+.hsel option{color:var(--td);background:#fff;}
+/* Filters */
+.fb{background:#fff;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;border:1px solid var(--br);box-shadow:0 2px 10px rgba(107,33,168,.06);}
+.fg{display:flex;flex-direction:column;gap:3px;min-width:150px;}
+.fl{font-size:12px;font-weight:700;color:var(--pm);text-transform:uppercase;letter-spacing:.5px;}
+.fs,.fi{border:1.5px solid var(--br);border-radius:8px;padding:8px 11px;font-family:'Sarabun',sans-serif;font-size:14px;color:var(--td);outline:none;transition:border-color .2s;background:var(--pp);}
+.fi{background:#fff;min-width:150px;}
+.fs:focus,.fi:focus{border-color:var(--pl);}
+.br-btn{background:var(--pm);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-family:'Sarabun',sans-serif;font-size:14px;cursor:pointer;font-weight:700;transition:background .2s;align-self:flex-end;}
+.br-btn:hover{background:var(--pd);}
+.dc{align-self:flex-end;font-size:13px;color:var(--tg);padding-bottom:7px;white-space:nowrap;}
+.dc span{color:var(--pm);font-weight:700;}
+/* KPI */
+.kg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.kc{background:#fff;border-radius:13px;padding:16px 18px;border:1px solid var(--br);box-shadow:0 2px 10px rgba(107,33,168,.06);position:relative;overflow:hidden;}
+.kc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
+.kc.p::after{background:var(--pm)}.kc.y::after{background:var(--ym)}.kc.g::after{background:#16a34a}.kc.r::after{background:#dc2626}
+.ki{font-size:24px;margin-bottom:6px;}
+.kl{font-size:12px;color:var(--tg);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;}
+.kv{font-size:28px;font-weight:800;color:var(--pd);line-height:1.1;}
+.ks{font-size:12px;color:var(--tg);margin-top:3px;}
+/* Type cards */
+.tc{display:flex;gap:10px;margin-bottom:16px;}
+.tcc{background:#fff;border-radius:12px;padding:12px 16px;border:1.5px solid var(--br);display:flex;align-items:center;gap:11px;flex:1;cursor:pointer;transition:all .2s;}
+.tcc:hover{border-color:var(--pl);box-shadow:0 4px 14px rgba(107,33,168,.1);}
+.tcc.active{border-color:var(--pm);background:var(--pp);}
+.tb{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.tb.pr{background:var(--pp)}.tb.op{background:var(--yp)}
+.tn{font-size:15px;font-weight:700;color:var(--pd);}
+.tct{font-size:12px;color:var(--tg);}
+.tam{font-size:13px;font-weight:600;color:var(--pm);}
+/* Card */
+.cd{background:#fff;border-radius:14px;padding:18px 20px;border:1px solid var(--br);box-shadow:0 2px 12px rgba(107,33,168,.06);margin-bottom:16px;}
+.cdt{font-size:16px;font-weight:700;color:var(--pd);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.cdt::before{content:'';width:4px;height:17px;background:var(--ym);border-radius:2px;flex-shrink:0;}
+/* Budget inputs */
+.bi-row{display:flex;gap:14px;margin-bottom:14px;flex-wrap:wrap;}
+.big{display:flex;flex-direction:column;gap:3px;}
+.bil{font-size:13px;font-weight:600;color:var(--tg);}
+.bis{font-size:12px;color:var(--tg);font-style:italic;}
+.bii{border:1.5px solid var(--br);border-radius:8px;padding:8px 12px;font-family:'Sarabun',sans-serif;font-size:15px;color:var(--pd);font-weight:700;outline:none;width:200px;background:var(--pp);}
+.bii:focus{border-color:var(--pl);}
+.di{border:none;background:transparent;font-size:12px;color:var(--tg);cursor:pointer;font-family:'Sarabun',sans-serif;}
+/* Hbar */
+.hr-row{margin-bottom:16px;padding:14px 16px;background:var(--pp);border-radius:12px;}
+.hr-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;flex-wrap:wrap;gap:6px;}
+.hr-lbl{font-size:15px;font-weight:700;color:var(--pd);display:flex;align-items:center;gap:7px;}
+.hbdg{font-size:12px;padding:2px 8px;border-radius:20px;font-weight:700;}
+.hbdg.pr{background:var(--pm);color:#fff}.hbdg.op{background:var(--ym);color:var(--pd)}
+.hr-stats{display:flex;gap:14px;flex-wrap:wrap;}
+.hst{display:flex;flex-direction:column;align-items:flex-end;}
+.hsv{font-weight:700;color:var(--pd);font-size:14px;}
+.hss{font-size:12px;color:var(--pl);}
+.hr-trk{height:30px;background:#e9d5ff;border-radius:8px;position:relative;overflow:hidden;margin:6px 0;}
+.hr-out{height:100%;border-radius:8px;position:relative;display:flex;align-items:center;}
+.hr-in{position:absolute;left:0;top:0;bottom:0;opacity:.85;border-radius:8px;}
+.hr-end{position:absolute;right:8px;font-size:13px;font-weight:800;color:#fff;z-index:2;white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,.4);}
+/* Bucket */
+.bcg{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:0;}
+.bcc{border-radius:11px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;border:2px solid transparent;}
+.bcc:hover{transform:translateY(-2px);}
+.bcc.active{box-shadow:0 0 0 3px var(--pd);}
+.bcp{font-size:15px;font-weight:800;}
+.bcr{font-size:11px;font-weight:600;margin:1px 0;}
+.bcn{font-size:27px;font-weight:800;}
+.bcl{font-size:11px;opacity:.75;}
+/* Table */
+.tw{overflow-x:auto;max-height:520px;overflow-y:auto;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+thead th{background:linear-gradient(135deg,var(--pd),var(--pm));color:#fff;padding:11px 12px;text-align:left;font-weight:600;white-space:nowrap;position:sticky;top:0;z-index:50;box-shadow:0 2px 6px rgba(61,26,110,.18);position:relative;user-select:none;}
+.resizer{position:absolute;right:0;top:0;bottom:0;width:5px;cursor:col-resize;background:rgba(255,255,255,0);z-index:10;border-right:2px solid rgba(255,255,255,0);transition:border-color .15s;}
+.resizer:hover,.resizer.resizing{border-right:2px solid rgba(255,255,255,.5);background:rgba(255,255,255,.12);}
+thead th:first-child{border-radius:7px 0 0 0;}thead th:last-child{border-radius:0 7px 0 0;}
+tbody tr{border-bottom:1px solid #f3e8ff;transition:background .15s;}
+tbody tr:hover{background:var(--pp);}
+tbody tr.z0{background:#fff7ed;}
+tbody tr.z0:hover{background:#fed7aa;}
+tbody td{padding:9px 12px;vertical-align:middle;}
+.pb-wrap{display:flex;align-items:center;gap:6px;}
+.pb-trk{flex:1;height:7px;border-radius:4px;overflow:hidden;min-width:50px;}
+.pb-fill{height:100%;border-radius:4px;}
+.pl{font-size:12px;font-weight:700;white-space:nowrap;min-width:34px;text-align:right;}
+.zbdg{background:#fed7aa;color:#c2410c;font-size:11px;padding:1px 5px;border-radius:20px;font-weight:700;}
+/* Unit tooltip */
+.utt{position:fixed;background:var(--pd);color:#fff;padding:6px 13px;border-radius:8px;font-size:13px;font-weight:600;pointer-events:none;z-index:9999;display:none;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+/* Footer */
+.ft{margin-top:16px;padding:14px 18px;background:#fff;border-radius:12px;border:1px solid var(--br);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.ftx{font-size:12.5px;color:var(--tg);}
+.ftx strong{color:var(--pd);}
+.fdi{border:1px solid var(--br);border-radius:6px;padding:4px 9px;font-family:'Sarabun',sans-serif;font-size:12px;color:var(--tg);outline:none;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:#f3e8ff;}
+::-webkit-scrollbar-thumb{background:var(--pl);border-radius:3px;}
+@media(max-width:900px){.kg{grid-template-columns:repeat(2,1fr);}.bcg{grid-template-columns:repeat(3,1fr);}}
+</style>
+
+<div class="utt" id="utt"></div>
+
+<div class="sb">
+  <div class="sb-logo">
+    <div class="li">🎓</div>
+    <div class="lt">วิทยาลัยศิลปะ สื่อ<br>และเทคโนโลยี</div>
+  </div>
+  <nav class="sb-nav">
+    <button class="ni active" onclick="goTo('overview',this)"><span class="ic">📊</span>ภาพรวม</button>
+    <button class="ni" onclick="goTo('budget',this)"><span class="ic">💰</span>งบประมาณ</button>
+    <button class="ni" onclick="goTo('hbar',this)"><span class="ic">📈</span>สัดส่วนงบ</button>
+    <button class="ni" onclick="goTo('bucket',this)"><span class="ic">🎯</span>% การใช้</button>
+    <button class="ni" onclick="goTo('tbl',this)"><span class="ic">📋</span>รายละเอียด</button>
+  </nav>
+  <div class="sb-foot">ข้อมูล ณ 29/06/2026</div>
+</div>
+
+<div class="mn">
+  <!-- HEADER -->
+  <div class="hd" id="overview">
+    <!-- Title area -->
+    <div class="hd-tag">BUDGET EXECUTION REPORT</div>
+    <div class="hd-row1">รายงานการใช้งบประมาณรายจ่าย ณ เดือน <span class="month-highlight" id="monthLabel">มิถุนายน</span> พ.ศ. <span class="month-highlight" id="yearLabel">2569</span></div>
+    <div class="hd-row2">
+      วิทยาลัยศิลปะ สื่อ และเทคโนโลยี
+      <span class="dot">·</span>
+      มหาวิทยาลัยเชียงใหม่
+    </div>
+    <div class="hd-row3">งานนโยบายและแผนและประกันคุณภาพการศึกษา</div>
+
+    <!-- Controls: selectors + CSV button -->
+    <div class="hd-controls">
+      <div class="hd-selrow">
+        <span class="hd-sellabel">เดือน</span>
+        <select class="hsel" id="selM" onchange="updateMonthLabel()">
+          <option>มกราคม</option><option>กุมภาพันธ์</option><option>มีนาคม</option><option>เมษายน</option><option>พฤษภาคม</option><option selected>มิถุนายน</option><option>กรกฎาคม</option><option>สิงหาคม</option><option>กันยายน</option><option>ตุลาคม</option><option>พฤศจิกายน</option><option>ธันวาคม</option>
+        </select>
+        <span class="hd-sellabel">ปี พ.ศ.</span>
+        <select class="hsel" id="selY" onchange="updateMonthLabel()"></select>
+      </div>
+      <div>
+        <input type="file" id="csvFile" accept=".csv,.xlsx,.xls" style="display:none" onchange="importFile(this)">
+        <button onclick="document.getElementById('csvFile').click()" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.2);border-radius:9px;padding:8px 16px;font-family:'Sarabun',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;white-space:nowrap;" onmouseover="this.style.background='rgba(255,255,255,.18)'" onmouseout="this.style.background='rgba(255,255,255,.1)'">
+          📂 เพิ่มข้อมูล CSV/Excel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="fb">
+    <div class="fg">
+      <label class="fl">หน่วยงาน</label>
+      <select class="fs" id="fU"></select>
+    </div>
+    <div class="fg">
+      <label class="fl">รหัสโครงการ</label>
+      <input class="fi" id="fC" type="text" placeholder="ค้นหารหัส...">
+    </div>
+    <div class="fg">
+      <label class="fl">รูปแบบ</label>
+      <select class="fs" id="fT">
+        <option value="">— ทั้งหมด —</option>
+        <option value="โครงการ">โครงการ</option>
+        <option value="ดำเนินงาน">ดำเนินงาน</option>
+      </select>
+    </div>
+    <button class="br-btn" onclick="resetF()">↺ รีเซ็ต</button>
+    <div class="dc">แสดง <span id="rc">358</span> / 358 รายการ</div>
+  </div>
+
+  <!-- KPI: hidden, IDs kept for JS compatibility -->
+  <div style="display:none">
+    <span id="k1"></span><span id="k2"></span><span id="k2s"></span>
+    <span id="k3"></span><span id="k3s"></span><span id="k4"></span>
+  </div>
+
+  <!-- TYPE CARDS -->
+  <div class="tc">
+    <div class="tcc" onclick="ftType('โครงการ')" id="tcp">
+      <div class="tb pr">📁</div>
+      <div><div class="tn">โครงการ</div><div class="tct" id="tcp-n">-</div><div class="tam" id="tcp-a">-</div></div>
+    </div>
+    <div class="tcc" onclick="ftType('ดำเนินงาน')" id="tco">
+      <div class="tb op">⚙️</div>
+      <div><div class="tn">ดำเนินงาน</div><div class="tct" id="tco-n">-</div><div class="tam" id="tco-a">-</div></div>
+    </div>
+  </div>
+
+  <!-- BUDGET STAT CARDS -->
+  <div class="cd" id="budget">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <div class="cdt" style="margin-bottom:0">สรุปภาพรวมงบประมาณ</div>
+      <span style="background:var(--pp);color:var(--pm);font-size:12px;padding:4px 12px;border-radius:20px;font-weight:700;border:1px solid var(--br);">หน่วย: บาท</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+
+      <!-- Card 1: งบทั้งปี (editable) -->
+      <div style="background:linear-gradient(135deg,#ede9fe 0%,#ddd6fe 100%);border:1px solid #c4b5fd;border-radius:18px;padding:22px 22px 20px;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(109,40,217,.1);">
+        <div style="position:absolute;top:-24px;right:-24px;width:100px;height:100px;background:rgba(109,40,217,.07);border-radius:50%;"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <div style="font-size:13px;font-weight:700;color:#5b21b6;line-height:1.4;">งบประมาณที่<br>จัดสรรทั้งปี</div>
+          <div style="width:38px;height:38px;background:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 2px 8px rgba(109,40,217,.15);flex-shrink:0;">📊</div>
+        </div>
+        <div style="margin-bottom:6px;" onclick="toggleEdit('totBud','totBudDisp')"><span style="background:#7c3aed;color:#fff;padding:3px 10px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;">✏️ แก้ไขยอด</span></div>
+        <div id="totBudDisp" style="font-size:28px;font-weight:900;color:#3b0764;line-height:1.1;margin:8px 0 2px;letter-spacing:-.5px;">0</div>
+        <input id="totBud" type="text" placeholder="กรอกงบประมาณ" oninput="updBudCards()" style="display:none;width:100%;border:1.5px solid #7c3aed;border-radius:8px;padding:7px 10px;font-family:'Sarabun',sans-serif;font-size:15px;color:#3b0764;font-weight:700;outline:none;margin:6px 0 4px;background:#fff;">
+        <div style="font-size:12px;color:#7c3aed;font-weight:600;margin-bottom:14px;">บาท</div>
+        <div style="height:6px;background:rgba(109,40,217,.15);border-radius:3px;overflow:hidden;margin-bottom:6px;">
+          <div id="pb1" style="height:100%;background:#7c3aed;border-radius:3px;width:100%;transition:width .5s;"></div>
+        </div>
+        <div style="font-size:11px;color:#7c3aed;opacity:.7;">งบประมาณอ้างอิงทั้งปี</div>
+      </div>
+
+      <!-- Card 2: จัดสรรแล้ว (จาก F) -->
+      <div style="background:linear-gradient(135deg,#dbeafe 0%,#bfdbfe 100%);border:1px solid #93c5fd;border-radius:18px;padding:22px 22px 20px;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(37,99,235,.1);">
+        <div style="position:absolute;top:-24px;right:-24px;width:100px;height:100px;background:rgba(37,99,235,.07);border-radius:50%;"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <div style="font-size:13px;font-weight:700;color:#1e40af;line-height:1.4;">จำนวนเงินจัดสรรแล้ว<br>ตามแผน <span style="font-size:11px;opacity:.7;">(จาก F)</span></div>
+          <div style="width:38px;height:38px;background:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 2px 8px rgba(37,99,235,.15);flex-shrink:0;">📋</div>
+        </div>
+        <div style="height:28px;margin-bottom:6px;"></div>
+        <div id="allocDisp" style="font-size:28px;font-weight:900;color:#1e3a8a;line-height:1.1;margin:8px 0 2px;letter-spacing:-.5px;">-</div>
+        <div style="font-size:12px;color:#2563eb;font-weight:600;margin-bottom:14px;">บาท</div>
+        <div style="height:6px;background:rgba(37,99,235,.15);border-radius:3px;overflow:hidden;margin-bottom:6px;">
+          <div id="pb2" style="height:100%;background:#2563eb;border-radius:3px;width:0%;transition:width .5s;"></div>
+        </div>
+        <div id="pct2lbl" style="font-size:11px;color:#1e40af;opacity:.75;">— % ของงบประมาณทั้งปี</div>
+      </div>
+
+      <!-- Card 3: ขออนุมัติ (จาก G) -->
+      <div style="background:linear-gradient(135deg,#fef3c7 0%,#fde68a 100%);border:1px solid #fbbf24;border-radius:18px;padding:22px 22px 20px;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(217,119,6,.12);">
+        <div style="position:absolute;top:-24px;right:-24px;width:100px;height:100px;background:rgba(217,119,6,.07);border-radius:50%;"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <div style="font-size:13px;font-weight:700;color:#92400e;line-height:1.4;">จำนวนเงินที่ขออนุมัติ<br>จะใช้ <span style="font-size:11px;opacity:.7;">(จาก G)</span></div>
+          <div style="width:38px;height:38px;background:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 2px 8px rgba(217,119,6,.15);flex-shrink:0;">▶</div>
+        </div>
+        <div id="gfPctBadge" style="height:28px;margin-bottom:6px;"></div>
+        <div id="reqDisp" style="font-size:28px;font-weight:900;color:#78350f;line-height:1.1;margin:8px 0 2px;letter-spacing:-.5px;">-</div>
+        <div style="font-size:12px;color:#d97706;font-weight:600;margin-bottom:14px;">บาท</div>
+        <div style="height:6px;background:rgba(217,119,6,.2);border-radius:3px;overflow:hidden;margin-bottom:6px;">
+          <div id="pb3" style="height:100%;background:#d97706;border-radius:3px;width:0%;transition:width .5s;"></div>
+        </div>
+        <div id="pct3lbl" style="font-size:11px;color:#92400e;opacity:.75;">— % ของงบประมาณทั้งปี</div>
+      </div>
+
+      <!-- Card 4: เบิกจ่ายจริง (editable) -->
+      <div style="background:linear-gradient(135deg,#d1fae5 0%,#a7f3d0 100%);border:1px solid #6ee7b7;border-radius:18px;padding:22px 22px 20px;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(5,150,105,.1);">
+        <div style="position:absolute;top:-24px;right:-24px;width:100px;height:100px;background:rgba(5,150,105,.07);border-radius:50%;"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <div style="font-size:13px;font-weight:700;color:#065f46;line-height:1.4;">จำนวนเงินที่<br>เบิกจ่ายจริง</div>
+          <div style="width:38px;height:38px;background:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 2px 8px rgba(5,150,105,.15);flex-shrink:0;">✅</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span onclick="toggleEdit('actSp','actSpDisp')" style="background:#059669;color:#fff;padding:3px 10px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;">✏️ แก้ไขยอด</span>
+          <span style="font-size:11px;color:#065f46;opacity:.6;">ระบบ 3 มิติ <input type="date" id="actD" value="2026-02-27" style="border:none;background:transparent;font-size:11px;color:#065f46;cursor:pointer;font-family:'Sarabun',sans-serif;opacity:.7;"></span>
+        </div>
+        <div id="actSpDisp" style="font-size:28px;font-weight:900;color:#064e3b;line-height:1.1;margin:8px 0 2px;letter-spacing:-.5px;">0</div>
+        <input id="actSp" type="text" placeholder="กรอกยอดเบิกจ่ายจริง" oninput="updBudCards()" style="display:none;width:100%;border:1.5px solid #059669;border-radius:8px;padding:7px 10px;font-family:'Sarabun',sans-serif;font-size:15px;color:#064e3b;font-weight:700;outline:none;margin:6px 0 4px;background:#fff;">
+        <div style="font-size:12px;color:#059669;font-weight:600;margin-bottom:14px;">บาท</div>
+        <div style="height:6px;background:rgba(5,150,105,.15);border-radius:3px;overflow:hidden;margin-bottom:6px;">
+          <div id="pb4" style="height:100%;background:#059669;border-radius:3px;width:0%;transition:width .5s;"></div>
+        </div>
+        <div id="pct4lbl" style="font-size:11px;color:#065f46;opacity:.75;">— % ของงบประมาณทั้งปี</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- HBAR -->
+  <div class="cd" id="hbar">
+    <div class="cdt">สัดส่วนงบจัดสรร – ขออนุมัติ แยกตามรูปแบบ</div>
+    <div id="hbs"></div>
+    <div style="display:flex;gap:14px;font-size:10.5px;margin-top:6px;flex-wrap:wrap;">
+      <span><span style="display:inline-block;width:10px;height:10px;background:var(--pm);border-radius:2px;margin-right:4px;"></span>งบจัดสรร</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:var(--ym);border-radius:2px;margin-right:4px;"></span>งบขอใช้</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:#e9d5ff;border-radius:2px;border:1px solid #c084fc;margin-right:4px;"></span>งบคงเหลือ</span>
+    </div>
+  </div>
+
+  <!-- BUCKET -->
+  <div class="cd" id="bucket">
+    <div class="cdt">การกระจายตัว % การใช้งบประมาณ <span style="font-size:11px;font-weight:400;color:var(--tg);">(คลิกเพื่อกรอง)</span></div>
+    <div class="bcg" id="bcg"></div>
+  </div>
+
+  <!-- BUCKET PIVOT TABLE -->
+  <div class="cd" style="margin-bottom:16px;" id="bucketPivot">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+      <div class="cdt" style="margin-bottom:0;">สรุปรายหน่วยงาน · แยกตาม % การใช้</div>
+      <span style="font-size:12px;color:var(--tg);">คลิกชื่อหน่วยงาน → กรองตาราง &nbsp;|&nbsp; คลิกตัวเลข → กรอง bucket</span>
+    </div>
+    <div style="overflow-x:auto;">
+      <table id="pivotTable" style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead>
+          <tr>
+            <th style="background:linear-gradient(135deg,var(--pd),var(--pm));color:#fff;padding:10px 14px;text-align:left;border-radius:8px 0 0 0;font-weight:600;white-space:nowrap;min-width:160px;">หน่วยงาน</th>
+            <th id="ph0" class="ph" data-bk="0" style="background:#fef2f2;color:#dc2626;border-top:3px solid #dc2626;padding:10px 10px;text-align:center;cursor:pointer;white-space:nowrap;min-width:88px;border-left:1px solid #fecaca;" onclick="clickPivotHeader(0)"><div style="font-size:14px;font-weight:800;">0%</div><div style="font-size:10px;font-weight:600;margin-top:1px;">ไม่มีการใช้</div></th>
+            <th id="ph1" class="ph" data-bk="1" style="background:#fef9c3;color:#854d0e;border-top:3px solid #b45309;padding:10px 10px;text-align:center;cursor:pointer;white-space:nowrap;min-width:88px;border-left:1px solid #fde047;" onclick="clickPivotHeader(1)"><div style="font-size:14px;font-weight:800;">1–20%</div><div style="font-size:10px;font-weight:600;margin-top:1px;">ใช้น้อยมาก</div></th>
+            <th id="ph2" class="ph" data-bk="2" style="background:#fff7ed;color:#c2410c;border-top:3px solid #c2410c;padding:10px 10px;text-align:center;cursor:pointer;white-space:nowrap;min-width:88px;border-left:1px solid #fdba74;" onclick="clickPivotHeader(2)"><div style="font-size:14px;font-weight:800;">21–50%</div><div style="font-size:10px;font-weight:600;margin-top:1px;">ใช้น้อย</div></th>
+            <th id="ph3" class="ph" data-bk="3" style="background:#f0fdf4;color:#15803d;border-top:3px solid #15803d;padding:10px 10px;text-align:center;cursor:pointer;white-space:nowrap;min-width:88px;border-left:1px solid #86efac;" onclick="clickPivotHeader(3)"><div style="font-size:14px;font-weight:800;">51–75%</div><div style="font-size:10px;font-weight:600;margin-top:1px;">ใช้ปานกลาง</div></th>
+            <th id="ph4" class="ph" data-bk="4" style="background:#f3e8ff;color:#6b21a8;border-top:3px solid #6b21a8;padding:10px 10px;text-align:center;cursor:pointer;white-space:nowrap;min-width:88px;border-left:1px solid #c084fc;border-radius:0 8px 0 0;" onclick="clickPivotHeader(4)"><div style="font-size:14px;font-weight:800;">76–100%</div><div style="font-size:10px;font-weight:600;margin-top:1px;">ใช้มาก</div></th>
+            <th style="background:linear-gradient(135deg,var(--pd),var(--pm));color:#fff;padding:10px 10px;text-align:center;white-space:nowrap;min-width:70px;">รวม</th>
+          </tr>
+        </thead>
+        <tbody id="pivotBody"></tbody>
+        <tfoot id="pivotFoot"></tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="cd" id="tbl">
+    <div class="cdt">รายละเอียดรายการ <span style="font-size:11px;font-weight:400;color:var(--tg);">เรียงจาก % ใช้น้อย → มาก | 🟠 = 0% ยังไม่ได้ใช้</span></div>
+    <div class="tw">
+      <table>
+        <thead><tr id="tblHead">
+          <th style="width:42px">#<div class="resizer"></div></th>
+          <th style="width:140px">หน่วยงาน<div class="resizer"></div></th>
+          <th style="width:150px">รหัสโครงการ<div class="resizer"></div></th>
+          <th style="width:280px">รายการ<div class="resizer"></div></th>
+          <th style="width:100px">รูปแบบ<div class="resizer"></div></th>
+          <th style="width:130px;text-align:right">จัดสรร (บาท)<div class="resizer"></div></th>
+          <th style="width:130px;text-align:right">ขออนุมัติ (บาท)<div class="resizer"></div></th>
+          <th style="width:130px;text-align:right">คงเหลือ (บาท)<div class="resizer"></div></th>
+          <th style="width:160px">% การใช้ · hover=หน่วยงาน<div class="resizer"></div></th>
+        </tr></thead>
+        <tbody id="tb"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="ft">
+    <div class="ftx"><strong>งานนโยบายและแผนและประกันคุณภาพการศึกษา</strong><br>ที่มา: Smart Office Update <input type="date" id="srcD" value="2026-05-25" class="fdi"></div>
+    <div class="ftx" style="text-align:right">ข้อมูลทั้งหมด <strong>358 รายการ</strong> จาก 29 หน่วยงาน<br>สร้างเมื่อ <span id="gd"></span></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js">
+
+// ===== RESIZABLE COLUMNS =====
+function initResizers(){
+  const ths=document.querySelectorAll('#tblHead th');
+  ths.forEach(th=>{
+    const rz=th.querySelector('.resizer');
+    if(!rz)return;
+    let startX,startW;
+    rz.addEventListener('mousedown',e=>{
+      startX=e.pageX;
+      startW=th.offsetWidth;
+      rz.classList.add('resizing');
+      document.body.style.cursor='col-resize';
+      document.body.style.userSelect='none';
+      const onMove=e=>{
+        const newW=Math.max(40,startW+(e.pageX-startX));
+        th.style.width=newW+'px';
+        th.style.minWidth=newW+'px';
+      };
+      const onUp=()=>{
+        rz.classList.remove('resizing');
+        document.body.style.cursor='';
+        document.body.style.userSelect='';
+        document.removeEventListener('mousemove',onMove);
+        document.removeEventListener('mouseup',onUp);
+      };
+      document.addEventListener('mousemove',onMove);
+      document.addEventListener('mouseup',onUp);
+      e.preventDefault();
+    });
+  });
+}
+
+// ===== IMPORT CSV / EXCEL =====
+function importFile(input){
+  const file=input.files[0];
+  if(!file)return;
+  const ext=file.name.split('.').pop().toLowerCase();
+  const reader=new FileReader();
+  if(ext==='csv'){
+    reader.onload=e=>parseCSV(e.target.result);
+    reader.readAsText(file,'utf-8');
+  } else {
+    reader.onload=e=>parseXLSX(e.target.result);
+    reader.readAsArrayBuffer(file);
+  }
+  input.value='';
+}
+function parseCSV(text){
+  const lines=text.split(/\r?\n/).filter(l=>l.trim());
+  if(lines.length<2){alert('ไม่พบข้อมูล');return;}
+  const hdr=parseCSVLine(lines[0]);
+  const idxU=findCol(hdr,['หน่วยงาน','unit']);
+  const idxC=findCol(hdr,['รหัสโครงการ','code','รหัส']);
+  const idxS=findCol(hdr,['แหล่งงบ','source']);
+  const idxN=findCol(hdr,['รายการ','name','item']);
+  const idxF=findCol(hdr,['รูปแบบ','type','format']);
+  const idxA=findCol(hdr,['เงินที่ได้จัดสรร','จัดสรร','allocated']);
+  const idxR=findCol(hdr,['จำนวนที่ขอ','ขอ','requested']);
+  const idxL=findCol(hdr,['คงเหลือ','remaining']);
+  if(idxA<0||idxR<0){alert('ไม่พบคอลัมน์ จัดสรร หรือ จำนวนที่ขอ');return;}
+  const recs=[];
+  for(let i=1;i<lines.length;i++){
+    const cols=parseCSVLine(lines[i]);
+    if(cols.length<3)continue;
+    recs.push({
+      u:cols[idxU>=0?idxU:0]||'',
+      c:cols[idxC>=0?idxC:1]||'',
+      s:cols[idxS>=0?idxS:2]||'',
+      n:cols[idxN>=0?idxN:3]||'',
+      f:cols[idxF>=0?idxF:4]||'',
+      a:parseFloat((cols[idxA]||'0').replace(/,/g,''))||0,
+      r:parseFloat((cols[idxR]||'0').replace(/,/g,''))||0,
+      l:parseFloat((cols[idxL>=0?idxL:idxR+1]||'0').replace(/,/g,''))||0,
+    });
+  }
+  applyNewData(recs,file.name);
+}
+function parseXLSX(buf){
+  try{
+    const wb=XLSX.read(buf,{type:'array'});
+    const ws=wb.Sheets[wb.SheetNames[0]];
+    const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+    if(rows.length<2){alert('ไม่พบข้อมูล');return;}
+    const hdr=rows[0].map(h=>String(h));
+    const idxU=findCol(hdr,['หน่วยงาน','unit']);
+    const idxC=findCol(hdr,['รหัสโครงการ','code','รหัส']);
+    const idxS=findCol(hdr,['แหล่งงบ','source']);
+    const idxN=findCol(hdr,['รายการ','name','item']);
+    const idxF=findCol(hdr,['รูปแบบ','type','format']);
+    const idxA=findCol(hdr,['เงินที่ได้จัดสรร','จัดสรร','allocated']);
+    const idxR=findCol(hdr,['จำนวนที่ขอ','ขอ','requested']);
+    const idxL=findCol(hdr,['คงเหลือ','remaining']);
+    if(idxA<0||idxR<0){alert('ไม่พบคอลัมน์ จัดสรร หรือ จำนวนที่ขอ');return;}
+    const recs=[];
+    for(let i=1;i<rows.length;i++){
+      const row=rows[i];
+      if(!row[idxA]&&!row[idxR])continue;
+      recs.push({
+        u:String(row[idxU>=0?idxU:0]||''),
+        c:String(row[idxC>=0?idxC:1]||''),
+        s:String(row[idxS>=0?idxS:2]||''),
+        n:String(row[idxN>=0?idxN:3]||''),
+        f:String(row[idxF>=0?idxF:4]||''),
+        a:parseFloat(String(row[idxA]||0).replace(/,/g,''))||0,
+        r:parseFloat(String(row[idxR]||0).replace(/,/g,''))||0,
+        l:parseFloat(String(row[idxL>=0?idxL:idxR+1]||0).replace(/,/g,''))||0,
+      });
+    }
+    applyNewData(recs,file ? file.name : 'ไฟล์ Excel');
+  } catch(e){alert('อ่านไฟล์ไม่ได้: '+e.message);}
+}
+function findCol(hdr,keys){
+  for(let k of keys){
+    const i=hdr.findIndex(h=>String(h).includes(k));
+    if(i>=0)return i;
+  }
+  return -1;
+}
+function parseCSVLine(line){
+  const cols=[];let cur='',inQ=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch==='"'){inQ=!inQ;}
+    else if(ch===','&&!inQ){cols.push(cur.trim());cur='';}
+    else{cur+=ch;}
+  }
+  cols.push(cur.trim());
+  return cols;
+}
+function applyNewData(recs,fname){
+  if(recs.length===0){alert('ไม่พบแถวข้อมูล');return;}
+  // Replace global data
+  D.length=0;
+  recs.forEach(r=>D.push(r));
+  // Rebuild unit filter
+  const us=[...new Set(D.map(r=>r.u))].sort();
+  const usel=document.getElementById('fU');
+  usel.innerHTML='<option value="">— ทั้งหมด —</option>'+us.map(u=>`<option value="${u}">${u}</option>`).join('');
+  document.getElementById('fU').value='';
+  document.getElementById('fC').value='';
+  document.getElementById('fT').value='';
+  // Update footer count
+  document.querySelector('.ftx:last-child').innerHTML=`ข้อมูลทั้งหมด <strong>${D.length} รายการ</strong> จาก ${us.length} หน่วยงาน<br>โหลดจาก: <strong>${fname}</strong>`;
+  document.getElementById('rc').parentElement.innerHTML='แสดง <span id="rc">' + D.length + '</span> / ' + D.length + ' รายการ';
+  applyF();
+  alert('✅ โหลดข้อมูลสำเร็จ! ' + recs.length + ' รายการ จากไฟล์ ' + fname);
+}
+
+</script>
+<script>
+const D=[{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-P1-001","s":"เงินอุดหนุนทั่วไป","n":"โครงการพัฒนาศักยภาพการทำงานบุคลากรสายสนับสนุน ประจำปี 2569","f":"โครงการ","a":385000.0,"r":326788.0,"l":84465.6},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-P1-002","s":"เงินอุดหนุนทั่วไป","n":"โครงการการพัฒนาศักยภาพบุคลากรสายสนับสนุน ผลักดันการศึกษาต่อระดับปริญญาโท ประจำปี 2569","f":"โครงการ","a":80000.0,"r":0.0,"l":80000.0},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-P1-003","s":"เงินอุดหนุนทั่วไป","n":"โครงการ ศึกษาดูงานของบุคลากรสายสนับสนุน ประจำปี 2569","f":"โครงการ","a":442600.0,"r":289780.0,"l":168105.51},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-P1-004","s":"เงินอุดหนุนทั่วไป","n":"โครงการ บ่มเพาะสายสนับสนุนเพื่อเตรียมความพร้อมในการขอตำแหน่งที่สูงขึ้น ประจำปี 2569","f":"โครงการ","a":141500.0,"r":40447.0,"l":106309.0},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-001","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหารงานประชุม","f":"ดำเนินงาน","a":80000.0,"r":41287.0,"l":38713.0},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-002","s":"เงินอุดหนุนทั่วไป","n":"ค่าถ่ายเอกสารและเข้าเล่ม","f":"ดำเนินงาน","a":3487.0,"r":3487.0,"l":0.0},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-003","s":"เงินอุดหนุนทั่วไป","n":"ค่าวัสดุการแพทย์และเวชภัณฑ์ (ยาและวัสดุป้องกันการติดเชื้อ)","f":"ดำเนินงาน","a":16000.0,"r":14312.0,"l":1692.0},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-004","s":"เงินอุดหนุนทั่วไป","n":"ค่าวัสดุอุปโภคบริโภค","f":"ดำเนินงาน","a":79513.0,"r":33536.0,"l":46149.0},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-009","s":"เงินอุดหนุนทั่วไป","n":"ค่าสมนาคุณกรรมการผู้ทรงคุณวุฒิในการประเมินผลงานทางวิชาการ ของพนักงานมหาวิทยาลัย กลุ่มปฏิบัติการและวิชาชีพ ให้ดำรงตำแหน่งสูงขึ้น","f":"ดำเนินงาน","a":36000.0,"r":20000.0,"l":16000.0},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-010","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนผู้ทรงคุณวุฒิประเมินผลงานคณบดี รอบ 1 ปี 6 เดือน","f":"ดำเนินงาน","a":11000.0,"r":11000.0,"l":0.0},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-011","s":"เงินอุดหนุนทั่วไป","n":"ค่าสมนาคุณกรรมการสืบสวนข้อเท็จจริง","f":"ดำเนินงาน","a":37500.0,"r":25500.0,"l":12000.0},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-P1-005","s":"เงินอุดหนุนทั่วไป","n":"โครงการ การพัฒนาศักยภาพการทำงานบุคลากรสายวิชาการ ประจำปี 2569","f":"โครงการ","a":605000.0,"r":320714.0,"l":299789.61},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-P1-006","s":"เงินอุดหนุนทั่วไป","n":"โครงการสนับสนุนการขอตำแหน่งทางวิชาการ ประจำปี 2569","f":"โครงการ","a":288000.0,"r":63473.0,"l":224527.0},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-P1-007","s":"เงินอุดหนุนทั่วไป","n":"โครงการ Lean Project & KM Culture​ 2026","f":"โครงการ","a":250000.0,"r":45490.0,"l":207909.0},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-P1-008","s":"เงินอุดหนุนทั่วไป","n":"โครงการแลกเปลี่ยนเรียนรู้และถ่ายทอดประสบการณ์ในการทำงาน ประจำปี 2569","f":"โครงการ","a":201600.0,"r":124800.0,"l":76800.0},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-P1-009","s":"เงินอุดหนุนทั่วไป","n":"โครงการสัมมนาผู้บริหารมหาวิทยาลัย ประจำปี 2569","f":"โครงการ","a":36400.0,"r":0.0,"l":36400.0},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-P1-010","s":"เงินอุดหนุนทั่วไป","n":"โครงการสัมมนาประจำปี 2569","f":"โครงการ","a":1660000.0,"r":1636981.0,"l":23019.0},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-P1-011","s":"เงินอุดหนุนทั่วไป","n":"โครงการสัมมนาสามสถาบัน (มข.- มอ. - มช.)","f":"โครงการ","a":108130.0,"r":0.0,"l":108130.0},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-P1-012","s":"เงินอุดหนุนทั่วไป","n":"โครงการการสร้างแรงจูงใจและความผูกพันของบุคลากร ประจำปี 2569","f":"โครงการ","a":162000.0,"r":70160.25,"l":91839.75},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-012","s":"เงินอุดหนุนทั่วไป","n":"ค่าสวัสดิการพนักงานมหาวิทยาลัยประจำ (เงินรายได้ส่วนงาน)","f":"ดำเนินงาน","a":86600.0,"r":19073.1,"l":67526.9},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-P1-013","s":"เงินอุดหนุนทั่วไป","n":"โครงการ Smart Workforce - การสร้างความผูกพันของบุคลากร","f":"โครงการ","a":39900.0,"r":39900.0,"l":0.0},{"u":"หน่วยบริหารงานบุคคล","c":"2569-HR-P3-001","s":"เงินอุดหนุนทั่วไป","n":"โครงการอบรมหลักสูตร เสริมสร้างความรู้ ความเข้าใจด้านการคุ้มครองข้อมูลส่วนบุคคล (PDPA) สำหรับคณะทำงานคุ้มครองข้อมูลส่วนบุคคล วิทยาลัยศิลปะ สื่อ และเทคโนโลยี","f":"โครงการ","a":40000.0,"r":29200.0,"l":10820.5},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-P1-001","s":"เงินอุดหนุนทั่วไป","n":"ค่าเดินทางไปราชการของผู้บริหาร","f":"โครงการ","a":200000.0,"r":169175.0,"l":56905.0},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-001","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหารว่างและเครื่องดื่มงานประชุม","f":"ดำเนินงาน","a":96000.0,"r":67204.0,"l":28796.0},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-002","s":"เงินอุดหนุนทั่วไป","n":"ค่าสนับสนุนกิจกรรมภายในและภายนอก มช.","f":"ดำเนินงาน","a":128000.0,"r":124425.0,"l":3575.0},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-003","s":"เงินอุดหนุนทั่วไป","n":"ค่าเบี้ยประชุมคณะกรรมการบริหารฯ","f":"ดำเนินงาน","a":86800.0,"r":60600.0,"l":26200.0},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-UT-002","s":"เงินอุดหนุนทั่วไป","n":"ค่าโทรศัพท์","f":"ดำเนินงาน","a":216200.0,"r":151638.6,"l":64561.4},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-P1-002","s":"เงินอุดหนุนทั่วไป","n":"โครงการสถาปนาวิทยาลัยศิลปะ สื่อ และเทคโนโลยี","f":"โครงการ","a":40000.0,"r":0.0,"l":40000.0},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-P1-003","s":"เงินอุดหนุนทั่วไป","n":"ถวายเทียนพรรษา","f":"โครงการ","a":6600.0,"r":6600.0,"l":0.0},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-005","s":"เงินอุดหนุนทั่วไป","n":"งานกฐินมหาวิทยาลัยเชียงใหม่","f":"ดำเนินงาน","a":10000.0,"r":0.0,"l":10000.0},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-006","s":"เงินอุดหนุนทั่วไป","n":"ค่าธรรมเนียม","f":"ดำเนินงาน","a":1000.0,"r":92.0,"l":908.0},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-007","s":"เงินอุดหนุนทั่วไป","n":"ค่ารับรอง","f":"ดำเนินงาน","a":84000.0,"r":2321.5,"l":81678.5},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-008","s":"เงินอุดหนุนทั่วไป","n":"ค่าพวงหรีด (กรณีผู้บริหาร มช.)","f":"ดำเนินงาน","a":20000.0,"r":2750.0,"l":17250.0},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-009","s":"เงินอุดหนุนทั่วไป","n":"ค่าของที่ระลึกประชุมกลุ่ม Consortium","f":"ดำเนินงาน","a":7500.0,"r":0.0,"l":7500.0},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-010","s":"เงินอุดหนุนทั่วไป","n":"ค่าเช่าเครื่องถ่ายเอกสาร ชั้น 1,3,4,5","f":"ดำเนินงาน","a":249600.0,"r":249600.0,"l":0.0},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-011","s":"เงินอุดหนุนทั่วไป","n":"ค่าถ่ายเอกสาร","f":"ดำเนินงาน","a":72000.0,"r":72000.0,"l":0.0},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-012","s":"เงินอุดหนุนทั่วไป","n":"น้ำดื่มสำหรับบุคลากรและนักศึกษา","f":"ดำเนินงาน","a":144000.0,"r":86028.0,"l":57972.0},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-013","s":"เงินอุดหนุนทั่วไป","n":"ค่าวัสดุงานบ้านงานครัวและอุปโภคบริโภค","f":"ดำเนินงาน","a":10000.0,"r":1433.0,"l":8567.0},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-UT-003","s":"เงินอุดหนุนทั่วไป","n":"ค่าไฟฟ้า (ตึกเก่า,ใหม่)","f":"ดำเนินงาน","a":1400000.0,"r":292194.16,"l":1107805.84},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-UT-004","s":"เงินอุดหนุนทั่วไป","n":"ค่าน้ำประปา","f":"ดำเนินงาน","a":86400.0,"r":34260.0,"l":52140.0},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-UT-005","s":"เงินอุดหนุนทั่วไป","n":"ค่าบริการไปรษณีย์","f":"ดำเนินงาน","a":10000.0,"r":3706.0,"l":6294.0},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-P1-004","s":"เงินอุดหนุนทั่วไป","n":"ดำหัวอธิการบดี คณบดี และผู้อาวุโส","f":"โครงการ","a":54000.0,"r":26000.0,"l":32843.0},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-P1-005","s":"เงินอุดหนุนทั่วไป","n":"โครงการประชุมคณะกรรมการอำนวยการ","f":"โครงการ","a":300000.0,"r":186100.0,"l":142337.15},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-P1-006","s":"เงินอุดหนุนทั่วไป","n":"โครงการสานสัมพันธ์ CAMT","f":"โครงการ","a":230000.0,"r":179916.0,"l":68291.0},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-P1-007","s":"เงินอุดหนุนทั่วไป","n":"โครงการกีฬาบุคลากรมหาวิทยาลัย","f":"โครงการ","a":60653.0,"r":58927.0,"l":1920.0},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-P3-001","s":"เงินอุดหนุนทั่วไป","n":"ขออนุมัติงบประมาณในการดำเนินการ “โครงการน้อมดวงใจ ถวายความอาลัยเป็นพระราชกุศลแด่สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง”","f":"โครงการ","a":61508.25,"r":61508.25,"l":290.0},{"u":"หน่วยธุรการและสารบรรณ","c":"2569-SC-016","s":"เงินอุดหนุนทั่วไป","n":"ค่าสนับสนุนงานสถาปนามหาวิทยาลัยเชียงใหม่","f":"ดำเนินงาน","a":38753.98,"r":38753.98,"l":0.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-001","s":"เงินอุดหนุนทั่วไป","n":"ฉากกั้นห้อง สำหรับห้องทำงาน","f":"ดำเนินงาน","a":219500.0,"r":219500.0,"l":0.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-P1-001","s":"เงินอุดหนุนทั่วไป","n":"โครงการอบรมป้องกันการเกิดอัคคีภัยเบื้องต้น","f":"โครงการ","a":30000.0,"r":0.0,"l":30000.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-002","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนล่วงเวลา","f":"ดำเนินงาน","a":158400.0,"r":81420.0,"l":76980.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-003","s":"เงินอุดหนุนทั่วไป","n":"ค่าล่วงเวลารถตู้","f":"ดำเนินงาน","a":54000.0,"r":54000.0,"l":0.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-004","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหารว่างและเครื่องดื่มในการประชุม","f":"ดำเนินงาน","a":24000.0,"r":8365.0,"l":15635.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-005","s":"เงินอุดหนุนทั่วไป","n":"จ้างเหมาบริการแม่บ้าน","f":"ดำเนินงาน","a":1059070.0,"r":1059070.0,"l":0.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-006","s":"เงินอุดหนุนทั่วไป","n":"จ้างเหมาบริการรถตู้","f":"ดำเนินงาน","a":1027200.0,"r":1027200.0,"l":0.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-007","s":"เงินอุดหนุนทั่วไป","n":"จ้างเหมาบริการรักษาความปลอดภัย อาคารวิทยาลัยฯ และศูนย์นวัตกรรมฯ","f":"ดำเนินงาน","a":1050408.0,"r":1050408.0,"l":0.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-008","s":"เงินอุดหนุนทั่วไป","n":"จ้างเหมาตรวจเช็ค Fire Alram (2 อาคาร)","f":"ดำเนินงาน","a":208115.0,"r":200090.0,"l":8025.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-009","s":"เงินอุดหนุนทั่วไป","n":"ค่าซ่อมแซมอุปกรณ์ Fire Alram อาคารวิทยาลัยฯ และศูนย์นวัตกรรมฯ","f":"ดำเนินงาน","a":50000.0,"r":0.0,"l":50000.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-010","s":"เงินอุดหนุนทั่วไป","n":"จ้างเหมาขุดลอกลำเหมืองด้านหลังอาคาร ปีละ 2 ครั้ง","f":"ดำเนินงาน","a":26000.0,"r":0.0,"l":26000.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-011","s":"เงินอุดหนุนทั่วไป","n":"จ้างเหมาทำความสะอาดบ่อพักน้ำใต้ดินและดาดฟ้า","f":"ดำเนินงาน","a":45000.0,"r":44000.0,"l":1000.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-012","s":"เงินอุดหนุนทั่วไป","n":"จ้างเหมาดูแลระบบโทรศัพท์ภายใน","f":"ดำเนินงาน","a":29190.0,"r":26536.0,"l":2654.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-013","s":"เงินอุดหนุนทั่วไป","n":"ค่าบริการบำรุงรักษาเครื่องปรับอากาศอาคารวิทยาลัยฯ และศูนย์นวัตกรรมฯ","f":"ดำเนินงาน","a":188053.0,"r":94000.0,"l":94053.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-014","s":"เงินอุดหนุนทั่วไป","n":"ค่าประกันอัคคีภัย อาคารศูนย์นวัตกรรมและการเรียนรู้ วิทยาลัยศิลปะ สื่อ และเทคโนโลยี","f":"ดำเนินงาน","a":135000.0,"r":134717.28,"l":282.72},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-015","s":"เงินอุดหนุนทั่วไป","n":"ค่าบริการตรวจเช็คบำรุงรักษาลิฟท์อาคารวิทยาลัยฯ และศูนย์นวัตกรรมฯ","f":"ดำเนินงาน","a":82200.0,"r":82200.0,"l":0.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-016","s":"เงินอุดหนุนทั่วไป","n":"ค่าจ้างเหมาอื่นๆ","f":"ดำเนินงาน","a":379500.0,"r":364687.1,"l":14812.9},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-018","s":"เงินอุดหนุนทั่วไป","n":"ค่าจ้างเหมาเปลี่ยนโคมไฟภายในตัวอาคาร","f":"ดำเนินงาน","a":50000.0,"r":35000.0,"l":15000.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-040","s":"เงินอุดหนุนทั่วไป","n":"ค่าวัสดุ (อุปกรณซ่อมแซม และวัสดุ ที่ใช้ในอาคารทั่วไป เช่น กระดาษชำระ กรวยน้ำดื่ม ถุงขยะฯ )","f":"ดำเนินงาน","a":326752.0,"r":291119.13,"l":35632.87},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-041","s":"เงินอุดหนุนทั่วไป","n":"ค่าวัสดุเชื้อเพลิงและหล่อลื่น","f":"ดำเนินงาน","a":150000.0,"r":107160.0,"l":42840.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-042","s":"เงินอุดหนุนทั่วไป","n":"เปลี่ยนเครื่องปรับอากาศพร้อมติดตั้ง","f":"ดำเนินงาน","a":500000.0,"r":499600.0,"l":400.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-043","s":"เงินอุดหนุนทั่วไป","n":"พัดลมดูดอากาศ ชั้น5","f":"ดำเนินงาน","a":20000.0,"r":20000.0,"l":0.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-044","s":"เงินอุดหนุนทั่วไป","n":"ผ้าม่านห้องต่างๆ","f":"ดำเนินงาน","a":246367.5,"r":246367.5,"l":0.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-045","s":"เงินอุดหนุนทั่วไป","n":"อุปกรณ์ดับกลิ่นห้องน้ำอาคารวิทยาลัย+อาคารศูนย์นวัตกรรม","f":"ดำเนินงาน","a":32367.5,"r":32367.5,"l":0.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-046","s":"เงินอุดหนุนทั่วไป","n":"เครื่องไฟฉุกเฉิน 50 ชุด (ชุดละ 2,500 บาท)","f":"ดำเนินงาน","a":125000.0,"r":119000.0,"l":6000.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-047","s":"เงินอุดหนุนทั่วไป","n":"จัดซื้อและติดตั้งประตูนิรภัย จำนวน 2 ชุด","f":"ดำเนินงาน","a":187250.0,"r":187250.0,"l":0.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-048","s":"เงินอุดหนุนทั่วไป","n":"จัดซื้อโต๊ะหมู่บูชา","f":"ดำเนินงาน","a":2900.0,"r":2900.0,"l":0.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-049","s":"เงินอุดหนุนทั่วไป","n":"งานปรับปรุงภายนอกอาคารวิทยาลัยฯ - ตึกเก่า","f":"ดำเนินงาน","a":3485000.0,"r":3485000.0,"l":0.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-050","s":"เงินอุดหนุนทั่วไป","n":"ค่าจ้างเหมาจัดทำหลังคาครอบเพื่อป้องกันน้ำรั่วซึมระหว่างอาคารและซ่อมฝ้าเพดาน - ตึกใหม่","f":"ดำเนินงาน","a":258000.0,"r":258000.0,"l":0.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-051","s":"เงินอุดหนุนทั่วไป","n":"จัดซื้อครุภัณฑ์เก้าอี้ สำหรับห้องปฏิบัติการคอมพิวเตอร์","f":"ดำเนินงาน","a":72660.0,"r":72660.0,"l":0.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-053","s":"เงินอุดหนุนทั่วไป","n":"จัดซื้อเครื่องดูดความชื้น","f":"ดำเนินงาน","a":26380.0,"r":26380.0,"l":0.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-054","s":"เงินอุดหนุนทั่วไป","n":"จัดซื้อครุภัณฑ์สำนักงาน เก้าอี้ ตู็ โต๊ะ สำหรับห้องพักอาจารย์","f":"ดำเนินงาน","a":635221.0,"r":635221.0,"l":0.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-056","s":"เงินอุดหนุนทั่วไป","n":"จัดซื้อแผ่นกันเสียงสะท้อน ห้อง 112 113 114 พร้อมติดตั้ง","f":"ดำเนินงาน","a":450000.0,"r":0.0,"l":450000.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-057","s":"เงินอุดหนุนทั่วไป","n":"จัดซื้อโต๊ะ+เก้าอี้ห้อง lab คอมพิวเตอร์ห้อง C205 และ C207","f":"ดำเนินงาน","a":700000.0,"r":450840.0,"l":249160.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-058","s":"เงินอุดหนุนทั่วไป","n":"จัดซื้อโต๊ะไฟเบอร์กลาสสำหรับนักศึกษา ติดตั้งใต้ตึกC","f":"ดำเนินงาน","a":72000.0,"r":69336.0,"l":2664.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-059","s":"เงินอุดหนุนทั่วไป","n":"จ้างเหมาทำทางระบายน้ำ ลานจอดรถ หน้าลานพ่อปู่","f":"ดำเนินงาน","a":200000.0,"r":200000.0,"l":0.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-060","s":"เงินอุดหนุนทั่วไป","n":"จัดซื้อเก้าอี้บุคลากรสายสนับสนุน","f":"ดำเนินงาน","a":490000.0,"r":393600.0,"l":96400.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-061","s":"เงินอุดหนุนทั่วไป","n":"ติดตั้งลิฟท์อาคารวิทยาลัยศิลปะ สื่อ และเทคโนโลยี (พร้อมรื้อถอน)","f":"ดำเนินงาน","a":1500000.0,"r":0.0,"l":1500000.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-062","s":"เงินอุดหนุนทั่วไป","n":"จ้างเหมาทำลานจอดรถมอไซค์+ทำรางระบายน้ำ (ด้านหลังอาคารวิทยาลัย)","f":"ดำเนินงาน","a":470000.0,"r":470000.0,"l":0.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-064","s":"เงินอุดหนุนทั่วไป","n":"จ้างออกแบบและควบคุมงานก่อสร้างปรับปรุงห้องน้ำ อาคารวิทยาลัยศิลปะ สื่อ และเทคโนโลยี","f":"ดำเนินงาน","a":81000.0,"r":81000.0,"l":0.0},{"u":"หน่วยอาคารสถานที่และยานพาหนะ","c":"2569-BD-065","s":"เงินอุดหนุนทั่วไป","n":"งานปรับปรุงห้องน้ำ อาคารวิทยาลัยศิลปะ สื่อ และเทคโนโลยี","f":"ดำเนินงาน","a":700000.0,"r":700000.0,"l":0.0},{"u":"หน่วยพัสดุ","c":"2569-SP-001","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนล่วงเวลา","f":"ดำเนินงาน","a":16000.0,"r":0.0,"l":16000.0},{"u":"หน่วยพัสดุ","c":"2569-SP-002","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหารว่างและเครื่องดื่ม","f":"ดำเนินงาน","a":2800.0,"r":2710.0,"l":90.0},{"u":"หน่วยพัสดุ","c":"2569-SP-003","s":"เงินอุดหนุนทั่วไป","n":"ค่าวัสดุสำนักงาน","f":"ดำเนินงาน","a":398000.0,"r":393075.03,"l":4924.97},{"u":"หน่วยการเงินและบัญชี","c":"2569-FIN-001","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนล่วงเวลา","f":"ดำเนินงาน","a":12000.0,"r":8400.0,"l":3600.0},{"u":"หน่วยการเงินและบัญชี","c":"2569-FIN-003","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนล่วงเวลาสำหรับตรวจสอบเอกสารเบิกจ่ายโครงการวิจัย","f":"ดำเนินงาน","a":26400.0,"r":13200.0,"l":13200.0},{"u":"หน่วยการเงินและบัญชี","c":"2569-FIN-004","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหารว่างและเครื่องดื่มในการประชุม","f":"ดำเนินงาน","a":28800.0,"r":20800.0,"l":8000.0},{"u":"หน่วยการเงินและบัญชี","c":"2569-FIN-P1-001","s":"เงินอุดหนุนทั่วไป","n":"โครงการแลกเปลี่ยนเรียนรู้ Fin café","f":"โครงการ","a":20400.0,"r":8120.0,"l":12280.0},{"u":"หน่วยการเงินและบัญชี","c":"2569-FIN-005","s":"เงินอุดหนุนทั่วไป","n":"ค่ารับรอง (ตรวจสอบภายใน)","f":"ดำเนินงาน","a":1160.0,"r":1160.0,"l":0.0},{"u":"หน่วยการเงินและบัญชี","c":"2569-FIN-006","s":"เงินอุดหนุนทั่วไป","n":"ค่าธรรมเนียมโอนเงิน","f":"ดำเนินงาน","a":800.0,"r":570.0,"l":230.0},{"u":"งานนโยบายและแผนและประกันคุณภาพการศึกษา","c":"2569-PNQA-001","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนล่วงเวลา","f":"ดำเนินงาน","a":10040.0,"r":5040.0,"l":5000.0},{"u":"งานนโยบายและแผนและประกันคุณภาพการศึกษา","c":"2569-PNQA-002","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหารว่างและเครื่องดื่มในการประชุม","f":"ดำเนินงาน","a":80000.0,"r":29914.0,"l":50086.0},{"u":"งานนโยบายและแผนและประกันคุณภาพการศึกษา","c":"2569-PNQA-P1-001","s":"เงินอุดหนุนทั่วไป","n":"สัมมนาระดมความคิดเห็นเชิงนโยบาย CAMT Retreat 2026","f":"โครงการ","a":96900.0,"r":96900.0,"l":18290.0},{"u":"งานนโยบายและแผนและประกันคุณภาพการศึกษา","c":"2569-PNQA-P1-002","s":"เงินอุดหนุนทั่วไป","n":"ยุทธศาสตร์สัญจร","f":"โครงการ","a":10164.0,"r":10164.0,"l":0.0},{"u":"งานนโยบายและแผนและประกันคุณภาพการศึกษา","c":"2569-PNQA-P1-003","s":"เงินอุดหนุนทั่วไป","n":"โครงการเตรียมความพร้อมองค์กรเพื่อขอรับรางวัลการบริหารสู่ความเป็นเลิศ (TQC)","f":"โครงการ","a":320000.0,"r":95720.0,"l":224280.0},{"u":"งานนโยบายและแผนและประกันคุณภาพการศึกษา","c":"2569-PNQA-P1-004","s":"เงินอุดหนุนทั่วไป","n":"ตรวจประเมินคุณภาพหลักสูตรประจำปี 2569","f":"โครงการ","a":15500.0,"r":0.0,"l":15500.0},{"u":"งานนโยบายและแผนและประกันคุณภาพการศึกษา","c":"2569-PNQA-P1-005","s":"เงินอุดหนุนทั่วไป","n":"การตรวจประเมิน EdPEx ประจำปี 2569","f":"โครงการ","a":26100.0,"r":26100.0,"l":17.0},{"u":"งานนโยบายและแผนและประกันคุณภาพการศึกษา","c":"2569-PNQA-P1-006","s":"เงินอุดหนุนทั่วไป","n":"การตรวจประเมิน ISO30401 สาขาวิชาการจัดการความรู้และนวัตกรรม","f":"โครงการ","a":88000.0,"r":87760.0,"l":1000.1},{"u":"งานนโยบายและแผนและประกันคุณภาพการศึกษา","c":"2569-PNQA-P1-002-001","s":"เงินอุดหนุนทั่วไป","n":"ยุทธศาสตร์สัญจร","f":"โครงการ","a":112000.0,"r":0.0,"l":112000.0},{"u":"หน่วยประชาสัมพันธ์","c":"2569-PR-P1-001","s":"เงินอุดหนุนทั่วไป","n":"Open house และตลาดนัดอุดมศึกษา 2569","f":"โครงการ","a":637500.0,"r":149900.0,"l":494994.5},{"u":"หน่วยประชาสัมพันธ์","c":"2569-PR-P1-002","s":"เงินอุดหนุนทั่วไป","n":"ปรับปรุงและพัฒนาสื่อประชาสัมพันธ์","f":"โครงการ","a":110500.0,"r":92405.0,"l":19217.0},{"u":"หน่วยประชาสัมพันธ์","c":"2569-PR-P1-003","s":"เงินอุดหนุนทั่วไป","n":"กิจกรรมประชาสัมพันธ์รับสมัครนักศึกษา online","f":"โครงการ","a":399500.0,"r":202000.0,"l":199145.29},{"u":"หน่วยประชาสัมพันธ์","c":"2569-PR-P1-004","s":"เงินอุดหนุนทั่วไป","n":"กิจกรรม Road Show และอบรม IT Inspiration","f":"โครงการ","a":212500.0,"r":86880.0,"l":125923.0},{"u":"หน่วยประชาสัมพันธ์","c":"2569-PR-P1-005","s":"เงินอุดหนุนทั่วไป","n":"กิจกรรมส่งเสริมการประกวดแข่งขันทางด้านเทคโนโลยี","f":"โครงการ","a":170000.0,"r":0.0,"l":170000.0},{"u":"หน่วยประชาสัมพันธ์","c":"2569-PR-P1-006","s":"เงินอุดหนุนทั่วไป","n":"CAMT FAM","f":"โครงการ","a":51000.0,"r":25500.0,"l":25620.0},{"u":"หน่วยประชาสัมพันธ์","c":"2569-PR-001","s":"เงินอุดหนุนทั่วไป","n":"ค่าสนับสนุนลงสื่อประชาสัมพันธ์","f":"ดำเนินงาน","a":12750.0,"r":5000.0,"l":7750.0},{"u":"หน่วยประชาสัมพันธ์","c":"2569-PR-002","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหารว่างต้อนรับคณะศึกษาดูงาน","f":"ดำเนินงาน","a":25500.0,"r":10174.0,"l":15326.0},{"u":"หน่วยประชาสัมพันธ์","c":"2569-PR-003","s":"เงินอุดหนุนทั่วไป","n":"ค่าของที่ระลึก สัญลักษณ์ CAMT","f":"ดำเนินงาน","a":255000.0,"r":195929.96,"l":59070.04},{"u":"หน่วยประชาสัมพันธ์","c":"2569-PR-P1-007","s":"เงินอุดหนุนทั่วไป","n":"KIM Talks 2025","f":"ดำเนินงาน","a":62500.0,"r":62500.0,"l":20356.0},{"u":"หน่วยประชาสัมพันธ์","c":"2569-PR-P1-008","s":"เงินอุดหนุนทั่วไป","n":"โครงการ CAMT Connext กิจกรรมส่งเสริมการสื่อสารภายในองค์กร","f":"โครงการ","a":25500.0,"r":0.0,"l":25500.0},{"u":"หน่วยประชาสัมพันธ์","c":"2569-PR-005","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนตัวแทนประชาสัมพันธ์การรับนักศึกษาต่างชาติ","f":"ดำเนินงาน","a":125000.0,"r":0.0,"l":125000.0},{"u":"หน่วยพัฒนาคุณภาพนักศึกษา","c":"2569-STU-P1-001","s":"เงินอุดหนุนทั่วไป","n":"ทุนการศึกษา","f":"โครงการ","a":1300000.0,"r":293840.0,"l":1006160.0},{"u":"หน่วยพัฒนาคุณภาพนักศึกษา","c":"2569-STU-P1-003","s":"เงินอุดหนุนทั่วไป","n":"โครงการสนับสนุนกิจกรรมนักศึกษาต่างชาติ","f":"โครงการ","a":100000.0,"r":98900.0,"l":13566.9},{"u":"หน่วยพัฒนาคุณภาพนักศึกษา","c":"2569-STU-P1-004","s":"เงินอุดหนุนทั่วไป","n":"โครงการเสริมสร้างพลังใจและพัฒนาคุณภาพนักศึกษา","f":"โครงการ","a":200000.0,"r":146250.0,"l":71055.5},{"u":"หน่วยพัฒนาคุณภาพนักศึกษา","c":"2569-STU-P1-005","s":"เงินอุดหนุนทั่วไป","n":"โครงการวันผู้ผู้บริหารพบผู้ปกครอง","f":"โครงการ","a":100000.0,"r":100000.0,"l":0.0},{"u":"หน่วยพัฒนาคุณภาพนักศึกษา","c":"2569-STU-P1-006","s":"เงินอุดหนุนทั่วไป","n":"โครงการกิจกรรมพัฒนานักศึกษา","f":"โครงการ","a":350000.0,"r":329045.0,"l":35777.55},{"u":"หน่วยพัฒนาคุณภาพนักศึกษา","c":"2569-STU-P1-007","s":"เงินอุดหนุนทั่วไป","n":"กิจกรรมด้านนักศึกษาเก่าสัมพันธ์ CAMT Alumni","f":"โครงการ","a":90000.0,"r":71309.0,"l":20064.0},{"u":"หน่วยพัฒนาคุณภาพนักศึกษา","c":"2569-STU-001","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหารว่างและเครื่องดื่มในการประชุม","f":"ดำเนินงาน","a":5560.0,"r":2030.0,"l":3530.0},{"u":"หน่วยพัฒนาคุณภาพนักศึกษา","c":"2569-STU-002","s":"เงินอุดหนุนทั่วไป","n":"ค่าสวัสดิการนักศึกษา","f":"ดำเนินงาน","a":10000.0,"r":0.0,"l":10000.0},{"u":"หน่วยพัฒนาคุณภาพนักศึกษา","c":"2569-STU-003","s":"เงินอุดหนุนทั่วไป","n":"ประกันสุขภาพนักศึกษาต่างชาติ","f":"ดำเนินงาน","a":1000000.0,"r":0.0,"l":1000000.0},{"u":"หน่วยพัฒนาคุณภาพนักศึกษา","c":"2569-STU-004","s":"เงินอุดหนุนทั่วไป","n":"ค่าแปลเอกสารและส่งเอกสารต่างประเทศ","f":"ดำเนินงาน","a":10000.0,"r":3450.0,"l":6850.0},{"u":"หน่วยพัฒนาคุณภาพนักศึกษา","c":"2569-STU-005","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนล่วงเวลา","f":"ดำเนินงาน","a":50000.0,"r":38460.0,"l":11540.0},{"u":"หน่วยพัฒนาคุณภาพนักศึกษา","c":"2569-STU-P1-008","s":"เงินอุดหนุนทั่วไป","n":"โครงการภายใต้งบประมาณกิจกรรมเสริมหลักสูตรและกีฬา ภาคการศึกษาที่ 2/2568","f":"โครงการ","a":97976.0,"r":73793.0,"l":24183.0},{"u":"หน่วยพัฒนาคุณภาพนักศึกษา","c":"2569-STU-P1-011","s":"เงินอุดหนุนทั่วไป","n":"โครงการพัฒนาสุขภาพใจ","f":"โครงการ","a":50000.0,"r":0.0,"l":50000.0},{"u":"หน่วยพัฒนาคุณภาพนักศึกษา","c":"2569-STU-P3-001","s":"เงินอุดหนุนทั่วไป","n":"สานสัมพันธ์และเสริมสร้างสุขภาวะทางจิตใจสำหรับนักศึกษาระดับบัณฑิตศึกษา","f":"โครงการ","a":55680.0,"r":0.0,"l":55680.0},{"u":"หน่วยพัฒนาคุณภาพนักศึกษา","c":"2569-STU-P3-002","s":"เงินอุดหนุนทั่วไป","n":"โครงการพัฒนาทักษะภาษาอังกฤษ","f":"โครงการ","a":200000.0,"r":41300.0,"l":158700.0},{"u":"หน่วยพัฒนาคุณภาพนักศึกษา","c":"2569-STU-P3-004","s":"เงินอุดหนุนทั่วไป","n":"สร้างสรรค์สายใยและความสัมพันธ์นักศึกษาใหม่ วิทยาลัยศิลปะ สื่อ และเทคโนโลยี (CAMT LINK: All Around Us คลิกให้ติด เชื่อมให้สนิท) ภาคการศึกษาที่ 1/2569 (งบสภา)","f":"โครงการ","a":181400.0,"r":156400.0,"l":25000.0},{"u":"หน่วยพัฒนาคุณภาพนักศึกษา","c":"2569-STU-P3-005","s":"เงินอุดหนุนทั่วไป","n":"กีฬาสานสัมพันธ์คณะการสื่อสารมวลชน คณะวิจิตรศิลป์ คณะสถาปัตยกรรมศาสตร์ และ วิทยาลัยศิลปะ สื่อและเทคโนโลยี (สองสื่อแบบศิลป์) ประจำปีการศึกษา 2569 (งบสภา)","f":"โครงการ","a":44620.0,"r":0.0,"l":44620.0},{"u":"หน่วยพัฒนาคุณภาพนักศึกษา","c":"2569-STU-P3-006","s":"เงินอุดหนุนทั่วไป","n":"กีฬาสีสานสัมพันธ์สี่ชั้นปีวิทยาลัยศิลปะ สื่อ และเทคโนโลยี (CAMT Sport Day) ภาคการศึกษาที่ 1/2569 (งบสภา)","f":"โครงการ","a":44990.0,"r":0.0,"l":44990.0},{"u":"หน่วยพัฒนาคุณภาพนักศึกษา","c":"2569-STU-P3-007","s":"เงินอุดหนุนทั่วไป","n":"เสริมสร้างสมรรถภาพทางกายเพื่อเตรียมความพร้อมกิจกรรมเดินขึ้นดอย (ก้าวขึ้นดอย ก้าวด้วยใจ ไปด้วยกัน) ประจำปีการศึกษา 2569 (งบสภา)","f":"โครงการ","a":22970.0,"r":0.0,"l":22970.0},{"u":"หน่วยพัฒนาคุณภาพนักศึกษา","c":"2569-STU-P3-008","s":"เงินอุดหนุนทั่วไป","n":"สานสัมพันธ์ชมรมผู้นำเชียร์ ครั้งที่ 1 ประจำปีการศึกษา 2569 (งบสภา)","f":"โครงการ","a":41685.0,"r":0.0,"l":41685.0},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-001","s":"เงินอุดหนุนทั่วไป","n":"ค่าล่วงเวลา","f":"ดำเนินงาน","a":180000.0,"r":180000.0,"l":117540.0},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-002","s":"เงินอุดหนุนทั่วไป","n":"ค่าบริการอินเตอร์เน็ต CMU","f":"ดำเนินงาน","a":84000.0,"r":84000.0,"l":0.0},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-003","s":"เงินอุดหนุนทั่วไป","n":"ค่าจ้างเหมาบริการอื่นๆ + งานติดตั้งสาย LAN ห้องทำงานตึกเก่า","f":"ดำเนินงาน","a":800000.0,"r":411410.0,"l":388590.0},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-004","s":"เงินอุดหนุนทั่วไป","n":"จ้างเหมาปรับปรุงระบบรางไฟฟ้า+lan ห้อง lab จำนวน 5 ห้อง","f":"ดำเนินงาน","a":1250000.0,"r":1250000.0,"l":0.0},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-005","s":"เงินอุดหนุนทั่วไป","n":"ค่าเช่า CMU Co-Location 10U","f":"ดำเนินงาน","a":50400.0,"r":50400.0,"l":0.0},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-006","s":"เงินอุดหนุนทั่วไป","n":"ค่าธรรมเนียม","f":"ดำเนินงาน","a":1500.0,"r":0.0,"l":1500.0},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-007","s":"เงินอุดหนุนทั่วไป","n":"ค่าเช่าคอมพิวเตอร์ ปีที่ 2","f":"ดำเนินงาน","a":4331592.0,"r":4331592.0,"l":0.0},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-008","s":"เงินอุดหนุนทั่วไป","n":"Software: OneDrive Cloud Storage ขนาดพื้นที่ 10TB","f":"ดำเนินงาน","a":140644.33,"r":140644.33,"l":0.0},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-009","s":"เงินอุดหนุนทั่วไป","n":"Software : LINE","f":"ดำเนินงาน","a":24000.0,"r":23330.28,"l":669.72},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-010","s":"เงินอุดหนุนทั่วไป","n":"Software : Amazon S3W","f":"ดำเนินงาน","a":12000.0,"r":10000.0,"l":2000.0},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-011","s":"เงินอุดหนุนทั่วไป","n":"Software : Mailgun","f":"ดำเนินงาน","a":18000.0,"r":17996.28,"l":3.72},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-012","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหารและเครื่องดืม","f":"ดำเนินงาน","a":5000.0,"r":5000.0,"l":1385.0},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-013","s":"เงินอุดหนุนทั่วไป","n":"Software : Apple ID and Android ID Account for Developer","f":"ดำเนินงาน","a":10000.0,"r":3590.0,"l":6410.0},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-014","s":"เงินอุดหนุนทั่วไป","n":"Software : Apple ID and Android ID Account for Teaching","f":"ดำเนินงาน","a":10000.0,"r":3590.0,"l":6410.0},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-015","s":"เงินอุดหนุนทั่วไป","n":"จัดซื้อเครื่องมัลติมีเดียโปรเจคเตอร์ระบบเลเซอร์ พร้อมติดตั้ง จำนวน 1 ระบบ","f":"ดำเนินงาน","a":495000.0,"r":495000.0,"l":0.0},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-016","s":"เงินอุดหนุนทั่วไป","n":"Software : SAP","f":"ดำเนินงาน","a":210000.0,"r":210000.0,"l":89856.25},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-017","s":"เงินอุดหนุนทั่วไป","n":"Software : MonsoonSIM","f":"ดำเนินงาน","a":362730.0,"r":362730.0,"l":0.0},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-018","s":"เงินอุดหนุนทั่วไป","n":"Software : Grammarly","f":"ดำเนินงาน","a":130000.0,"r":130000.0,"l":6683.76},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-019","s":"เงินอุดหนุนทั่วไป","n":"Software : AppSheet Enterprise Plus","f":"ดำเนินงาน","a":25000.0,"r":10539.5,"l":14460.5},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-020","s":"เงินอุดหนุนทั่วไป","n":"ติดตั้งจอภาพแสดงผล LED Screen พร้อมระบบควบคุม","f":"ดำเนินงาน","a":900000.0,"r":900000.0,"l":0.0},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-021","s":"เงินอุดหนุนทั่วไป","n":"Software : Adobe Creative Cloud","f":"ดำเนินงาน","a":2654440.0,"r":2576400.0,"l":78040.0},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-022","s":"เงินอุดหนุนทั่วไป","n":"Software : Canva","f":"ดำเนินงาน","a":848940.0,"r":848790.0,"l":150.0},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-023","s":"เงินอุดหนุนทั่วไป","n":"ค่าวัสดุซ่อมบำรุง","f":"ดำเนินงาน","a":600000.0,"r":428625.0,"l":171375.0},{"u":"หน่วยคอมพิวเตอร์และพัฒนาระบบ","c":"2569-COM-025","s":"เงินอุดหนุนทั่วไป","n":"คอมพิวเตอร์แท๊บเล็ต","f":"ดำเนินงาน","a":1000000.0,"r":999750.0,"l":250.0},{"u":"ห้องสร้างสรรค์เพื่อการเรียนรู้","c":"2569-LIB-009","s":"เงินอุดหนุนทั่วไป","n":"ค่าล่วงเวลา","f":"ดำเนินงาน","a":41880.0,"r":23460.0,"l":18420.0},{"u":"ห้องสร้างสรรค์เพื่อการเรียนรู้","c":"2569-LIB-010","s":"เงินอุดหนุนทั่วไป","n":"ค่าหนังสือ - รวมทุกหลักสูตร","f":"ดำเนินงาน","a":200000.0,"r":32268.75,"l":167731.25},{"u":"ห้องสร้างสรรค์เพื่อการเรียนรู้","c":"2569-LIB-011","s":"เงินอุดหนุนทั่วไป","n":"ค่าบอร์ดเกม","f":"ดำเนินงาน","a":20000.0,"r":4683.5,"l":15316.5},{"u":"ห้องสร้างสรรค์เพื่อการเรียนรู้","c":"2569-LIB-P1-001","s":"เงินอุดหนุนทั่วไป","n":"จ้างเหมาผู้ปฏิบัติงานด้านทรัพยากรสารสนเทศประจำห้องสร้างสรรค์เพื่อการเรียนรู้","f":"โครงการ","a":60000.0,"r":10000.0,"l":50000.0},{"u":"ศูนย์การเรียนรู้ร่วมการทำงาน(WIL)","c":"2569-WIL-P1-001","s":"เงินอุดหนุนทั่วไป","n":"โครงการเตรียมความพร้อมสหกิจศึกษาหลักสูตรแอนนิเมชันและวิชวลเอฟเฟกต์ ประจำปีการศึกษา 2568 - 2569","f":"โครงการ","a":130000.0,"r":125000.0,"l":28867.17},{"u":"ศูนย์การเรียนรู้ร่วมการทำงาน(WIL)","c":"2569-WIL-P1-002","s":"เงินอุดหนุนทั่วไป","n":"โครงการนิเทศการปฏิบัติสหกิจศึกษาหลักสูตรแอนนิเมชันและวิชวลเอฟเฟกต์ ประจำปีการศึกษา 2568 - 2569","f":"โครงการ","a":110000.0,"r":73468.0,"l":45242.17},{"u":"ศูนย์การเรียนรู้ร่วมการทำงาน(WIL)","c":"2569-WIL-P1-003","s":"เงินอุดหนุนทั่วไป","n":"โครงการนิเทศการปฏิบัติสหกิจศึกษา หลักสูตร MMIT ประจำปีการศึกษา 2568 - 2569","f":"โครงการ","a":280000.0,"r":262532.37,"l":84325.89},{"u":"ศูนย์การเรียนรู้ร่วมการทำงาน(WIL)","c":"2569-WIL-P1-004","s":"เงินอุดหนุนทั่วไป","n":"โครงการเตรียมความพร้อมสหกิจศึกษาหลักสูตรดิจิทัลเกม ประจำปีการศึกษา 2568 - 2569","f":"โครงการ","a":98000.0,"r":55500.0,"l":51391.35},{"u":"ศูนย์การเรียนรู้ร่วมการทำงาน(WIL)","c":"2569-WIL-P1-005","s":"เงินอุดหนุนทั่วไป","n":"โครงการนิเทศการปฏิบัติสหกิจศึกษาหลักสูตรดิจิทัลเกม ประจำปีการศึกษา 2568 - 2569","f":"โครงการ","a":82000.0,"r":532.48,"l":81467.52},{"u":"ศูนย์การเรียนรู้ร่วมการทำงาน(WIL)","c":"2569-WIL-P1-006","s":"เงินอุดหนุนทั่วไป","n":"โครงการเตรียมความพร้อมสหกิจศึกษาหลักสูตรวิศวกรรมซอฟต์แวร์(นานาชาติ) แผน 4เดือน ประจำปีการศึกษา 2568-2569","f":"โครงการ","a":110000.0,"r":43060.0,"l":78585.5},{"u":"ศูนย์การเรียนรู้ร่วมการทำงาน(WIL)","c":"2569-WIL-P1-007","s":"เงินอุดหนุนทั่วไป","n":"โครงการนิเทศการปฏิบัติสหกิจศึกษาหลักสูตรวิศวกรรมซอฟต์แวร์(นานาชาติ) แผน 4เดือน ประจำปีการศึกษา 2568-2569","f":"โครงการ","a":185000.0,"r":101620.0,"l":107392.65},{"u":"ศูนย์การเรียนรู้ร่วมการทำงาน(WIL)","c":"2569-WIL-P1-008","s":"เงินอุดหนุนทั่วไป","n":"โครงการเตรียมความพร้อมนักศึกษาสหกิจศึกษา หลักสูตร MMIT (นานาชาติ) ประจำปีการศึกษา 2569","f":"โครงการ","a":121000.0,"r":0.0,"l":121000.0},{"u":"ศูนย์การเรียนรู้ร่วมการทำงาน(WIL)","c":"2569-WIL-P1-009","s":"เงินอุดหนุนทั่วไป","n":"โครงการเตรียมความพร้อมสหกิจศึกษาหลักสูตรวิศวกรรมซอฟต์แวร์(นานาชาติ) แผน 8เดือน ประจำปีการศึกษา 2568-2569","f":"โครงการ","a":14500.0,"r":7665.0,"l":6835.0},{"u":"ศูนย์การเรียนรู้ร่วมการทำงาน(WIL)","c":"2569-WIL-P1-010","s":"เงินอุดหนุนทั่วไป","n":"โครงการนิเทศการปฏิบัติสหกิจศึกษาหลักสูตรวิศวกรรมซอฟต์แวร์(นานาชาติ) แผน 8เดือน ประจำปีการศึกษา 2568-2569","f":"โครงการ","a":25000.0,"r":0.0,"l":25000.0},{"u":"ศูนย์การเรียนรู้ร่วมการทำงาน(WIL)","c":"2569-WIL-P1-011","s":"เงินอุดหนุนทั่วไป","n":"โครงการนิเทศฝึกงาน หลักสูตร MMIT ประจำปีการศึกษา 2568","f":"โครงการ","a":35000.0,"r":35000.0,"l":0.0},{"u":"ศูนย์การเรียนรู้ร่วมการทำงาน(WIL)","c":"2569-WIL-P1-012","s":"เงินอุดหนุนทั่วไป","n":"โครงการเตรียมความพร้อมนักศึกษาสหกิจศึกษา หลักสูตร MMIT (ปกติ) ประจำปีการศึกษา 2568-2569","f":"โครงการ","a":502000.0,"r":206300.0,"l":308418.5},{"u":"ศูนย์การเรียนรู้ร่วมการทำงาน(WIL)","c":"2569-WIL-001","s":"เงินอุดหนุนทั่วไป","n":"การเตรียมความพร้อมสำหรับการเรียนการสอนรูปแบบใหม่","f":"ดำเนินงาน","a":6000.0,"r":6000.0,"l":0.0},{"u":"หน่วยบริหารงานวิจัย","c":"2569-RE-P1-001","s":"เงินอุดหนุนทั่วไป","n":"ความร่วมมือด้านงานวิจัย","f":"โครงการ","a":200000.0,"r":98060.0,"l":107587.02},{"u":"หน่วยบริหารงานวิจัย","c":"2569-RE-P1-002","s":"เงินอุดหนุนทั่วไป","n":"ส่งเสริมและสนับสนุนด้านทรัพย์สินทางปัญญา","f":"โครงการ","a":30000.0,"r":30000.0,"l":0.0},{"u":"หน่วยบริหารงานวิจัย","c":"2569-RE-P1-003","s":"เงินอุดหนุนทั่วไป","n":"ทุนสนับสนุนงานวิจัย","f":"โครงการ","a":955500.0,"r":722900.0,"l":232600.0},{"u":"หน่วยบริหารงานวิจัย","c":"2569-RE-P1-004","s":"เงินอุดหนุนทั่วไป","n":"ค่าล่วงเวลา เจ้าหน้าที่ดำเนินงานโครงการวิจัย ภายใน-ภายนอก","f":"โครงการ","a":200000.0,"r":130920.0,"l":69080.0},{"u":"หน่วยบริหารงานวิจัย","c":"2569-RE-P1-005","s":"เงินอุดหนุนทั่วไป","n":"สนับสนุนการเผยแพร่ผลงานวิจัย","f":"โครงการ","a":2010000.0,"r":1776720.0,"l":240477.25},{"u":"หน่วยบริหารงานวิจัย","c":"2569-RE-P1-006","s":"เงินอุดหนุนทั่วไป","n":"พัฒนาบุคลากรด้านวิจัย","f":"โครงการ","a":160000.0,"r":18880.0,"l":141120.0},{"u":"หน่วยบริหารงานวิจัย","c":"2569-RE-P1-007","s":"เงินอุดหนุนทั่วไป","n":"สนับสนุนกลุ่มวิจัย","f":"โครงการ","a":501830.0,"r":0.0,"l":501830.0},{"u":"หน่วยบริหารงานวิจัย","c":"2569-RE-P3-001","s":"เงินอุดหนุนทั่วไป","n":"โครงการวิจัย ทุนนักวิจัยรุ่นกลาง วช","f":"โครงการ","a":100000.0,"r":100000.0,"l":0.0},{"u":"หน่วยบริหารงานวิเทศสัมพันธ์","c":"2569-IRD-P1-001","s":"เงินอุดหนุนทั่วไป","n":"การดำเนินงานตามพันธกิจสากล วิทยาลัยศิลปะ สื่อ และเทคโนโลยี","f":"โครงการ","a":600000.0,"r":425719.24,"l":195151.77},{"u":"หน่วยบริหารงานวิเทศสัมพันธ์","c":"2569-IRD-P1-002","s":"เงินอุดหนุนทั่วไป","n":"โครงการสนับสนุน Student, Staff and Lecturer Exchange","f":"โครงการ","a":800000.0,"r":409700.0,"l":396680.13},{"u":"หลักสูตรการจัดการความรู้และนวัตกรรม","c":"2569-KM-P1-001","s":"เงินอุดหนุนทั่วไป","n":"ทุนสนับสนุนการทำวิจัยและการพัฒนาทักษะทางด้านวิชาการ (ระดับปริญญาเอก)","f":"โครงการ","a":150000.0,"r":0.0,"l":150000.0},{"u":"หลักสูตรการจัดการความรู้และนวัตกรรม","c":"2569-KM-P1-002","s":"เงินอุดหนุนทั่วไป","n":"กิจกรรมศึกษาดูงานในประเทศ/ต่างประเทศ (อาจารย์)","f":"โครงการ","a":120000.0,"r":0.0,"l":120000.0},{"u":"หลักสูตรการจัดการความรู้และนวัตกรรม","c":"2569-KM-P1-003","s":"เงินอุดหนุนทั่วไป","n":"กิจกรรมเพื่อพัฒนาหลักสูตรการจัดการความรู้และนวัตกรรม ป.เอก","f":"โครงการ","a":75000.0,"r":0.0,"l":75000.0},{"u":"หลักสูตรการจัดการความรู้และนวัตกรรม","c":"2569-KM-001","s":"เงินอุดหนุนทั่วไป","n":"วิทยากรสำหรับหลักสูตรจัดการความรู้และนวัตกรรม ป.เอก","f":"ดำเนินงาน","a":40600.0,"r":0.0,"l":40600.0},{"u":"หลักสูตรการจัดการความรู้และนวัตกรรม","c":"2569-KM-002","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนอาจารย์ (ภาคพิเศษ) ระดับบัณฑิตศึกษา สาขาการจัดการความรู้และนวัตกรรม ป.เอก","f":"ดำเนินงาน","a":405000.0,"r":67500.0,"l":337500.0},{"u":"หลักสูตรการจัดการความรู้และนวัตกรรม","c":"2569-KM-003","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนคณะกรรมการสอบวัดคุณสมบัติ ป.เอก","f":"ดำเนินงาน","a":16800.0,"r":7200.0,"l":9600.0},{"u":"หลักสูตรการจัดการความรู้และนวัตกรรม","c":"2569-KM-004","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนคณะกรรมการสอบประมวลความรู้ ป.เอก","f":"ดำเนินงาน","a":8000.0,"r":8000.0,"l":0.0},{"u":"หลักสูตรการจัดการความรู้และนวัตกรรม","c":"2569-KM-005","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนคณะกรรมการสอบวิทยานิพนธ์ ภาคปกติ","f":"ดำเนินงาน","a":23040.0,"r":14400.0,"l":8640.0},{"u":"หลักสูตรการจัดการความรู้และนวัตกรรม","c":"2569-KM-006","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนคณะกรรมการสอบวิทยานิพนธ์ ภาคพิเศษ","f":"ดำเนินงาน","a":35800.0,"r":15900.0,"l":19900.0},{"u":"หลักสูตรการจัดการความรู้และนวัตกรรม","c":"2569-KM-007","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหาร อาหารว่าง และเครื่องดื่มในการประชุม","f":"ดำเนินงาน","a":14400.0,"r":11265.0,"l":3135.0},{"u":"สำนักวิชา","c":"2569-ACA-P1-001","s":"เงินอุดหนุนทั่วไป","n":"โครงการสนับสนุนทุนทำงานสำหรับนักศึกษาช่วยปฏิบัติการสอน","f":"โครงการ","a":400000.0,"r":237200.0,"l":162800.0},{"u":"สำนักวิชา","c":"2569-ACA-001","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนกรรมการคุมสอบ","f":"ดำเนินงาน","a":92200.0,"r":70000.0,"l":23360.0},{"u":"สำนักวิชา","c":"2569-ACA-002","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนล่วงเวลา","f":"ดำเนินงาน","a":11399.0,"r":4260.0,"l":7139.0},{"u":"สำนักวิชา","c":"2569-ACA-003","s":"เงินอุดหนุนทั่วไป","n":"ค่ากระดาษทำข้อสอบ","f":"ดำเนินงาน","a":98199.0,"r":80337.0,"l":17862.0},{"u":"สำนักวิชา","c":"2569-ACA-004","s":"เงินอุดหนุนทั่วไป","n":"ค่ารับรอง","f":"ดำเนินงาน","a":46401.0,"r":42828.0,"l":15803.0},{"u":"สำนักวิชา","c":"2569-ACA-006","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนอาจารย์ผู้สอน (ค่าสอนเกินภาระงาน)","f":"ดำเนินงาน","a":3190547.2,"r":1578615.0,"l":1611932.2},{"u":"สำนักวิชา","c":"2569-ACA-009","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนอาจารย์พิเศษ","f":"ดำเนินงาน","a":1409200.0,"r":732500.0,"l":676700.0},{"u":"สำนักวิชา","c":"2569-ACA-010","s":"เงินอุดหนุนทั่วไป","n":"โครงการจ้างเหมาผู้ช่วยสอน TA","f":"ดำเนินงาน","a":1200000.0,"r":735300.0,"l":464700.0},{"u":"สำนักวิชา","c":"2569-ACA-P1-002","s":"เงินอุดหนุนทั่วไป","n":"ระบบ Chatbot งานบริการการศึกษา","f":"โครงการ","a":100000.0,"r":100000.0,"l":0.0},{"u":"สำนักวิชา","c":"2569-ACA-P1-003","s":"เงินอุดหนุนทั่วไป","n":"ระบบบริหารจัดการข้อมูลนักศึกษา ระดับบัณฑิตศึกษา","f":"โครงการ","a":300000.0,"r":300000.0,"l":0.0},{"u":"หลักสูตรการจัดการความรู้และนวัตกรรม","c":"2569-KIM-P1-001","s":"เงินอุดหนุนทั่วไป","n":"กิจกรรมศึกษาดูงานในประเทศ/ต่างประเทศ (อาจารย์)","f":"โครงการ","a":60000.0,"r":49740.0,"l":22448.0},{"u":"หลักสูตรการจัดการความรู้และนวัตกรรม","c":"2569-KIM-P1-002","s":"เงินอุดหนุนทั่วไป","n":"ทุนสนับสนุนส่งเสริมและพัฒนางานวิชาการนักศึกษา","f":"โครงการ","a":95000.0,"r":95000.0,"l":0.0},{"u":"หลักสูตรการจัดการความรู้และนวัตกรรม","c":"2569-KIM-P1-003","s":"เงินอุดหนุนทั่วไป","n":"กิจกรรมเพื่อพัฒนานักศึกษาในหลักสูตรการจัดการความรู้และนวัตกรรม","f":"โครงการ","a":112500.0,"r":30400.0,"l":85728.0},{"u":"หลักสูตรการจัดการความรู้และนวัตกรรม","c":"2569-KIM-001","s":"เงินอุดหนุนทั่วไป","n":"วิทยากรสำหรับหลักสูตรจัดการความรู้และนวัตกรรม ป.โท","f":"ดำเนินงาน","a":90000.0,"r":50005.51,"l":45455.99},{"u":"หลักสูตรการจัดการความรู้และนวัตกรรม","c":"2569-KIM-002","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนอาจารย์ (ภาคพิเศษ) ระดับบัณฑิตศึกษา สาขาการจัดการความรู้และนวัตกรรม ป.โท","f":"ดำเนินงาน","a":810000.0,"r":192270.0,"l":617730.0},{"u":"หลักสูตรการจัดการความรู้และนวัตกรรม","c":"2569-KIM-003","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนอาจารย์พิเศษ สาขาการจัดการความรู้และนวัตกรรม ป.โท","f":"ดำเนินงาน","a":67500.0,"r":0.0,"l":67500.0},{"u":"หลักสูตรการจัดการความรู้และนวัตกรรม","c":"2569-KIM-004","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนคณะกรรมการสอบการค้นคว้าอิสระ ภาคพิเศษ","f":"ดำเนินงาน","a":40000.0,"r":18000.0,"l":22000.0},{"u":"หลักสูตรการจัดการความรู้และนวัตกรรม","c":"2569-KIM-005","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนคณะกรรมการสอบวิทยานิพนธ์ ภาคพิเศษ","f":"ดำเนินงาน","a":15500.0,"r":4800.0,"l":10700.0},{"u":"หลักสูตรการจัดการความรู้และนวัตกรรม","c":"2569-KIM-006","s":"เงินอุดหนุนทั่วไป","n":"ค่าสอบประมวลความรู้","f":"ดำเนินงาน","a":16000.0,"r":0.0,"l":16000.0},{"u":"หลักสูตรการจัดการความรู้และนวัตกรรม","c":"2569-KIM-007","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหาร อาหารว่างและเครื่องดื่ม งานประชุม","f":"ดำเนินงาน","a":14400.0,"r":8484.7,"l":5915.3},{"u":"หลักสูตรวิศวกรรมซอฟต์แวร์","c":"2569-MSE-P1-001","s":"เงินอุดหนุนทั่วไป","n":"ทุนสนับสนุนส่งเสริมและพัฒนางานวิชาการนักศึกษา","f":"โครงการ","a":100000.0,"r":0.0,"l":100000.0},{"u":"หลักสูตรวิศวกรรมซอฟต์แวร์","c":"2569-MSE-P1-002","s":"เงินอุดหนุนทั่วไป","n":"กิจกรรมศึกษาดูงานในประเทศ/ต่างประเทศ (อาจารย์)","f":"โครงการ","a":75000.0,"r":0.0,"l":75000.0},{"u":"หลักสูตรวิศวกรรมซอฟต์แวร์","c":"2569-MSE-P1-003","s":"เงินอุดหนุนทั่วไป","n":"กิจกรรมพัฒนานักศึกษาในหลักสูตรวิศวกรรมซอฟต์แวร์ ป.โท","f":"โครงการ","a":30000.0,"r":2345.0,"l":27655.0},{"u":"หลักสูตรวิศวกรรมซอฟต์แวร์","c":"2569-MSE-001","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนอาจารย์ผู้สอนภาคพิเศษ","f":"ดำเนินงาน","a":450000.0,"r":180000.0,"l":270000.0},{"u":"หลักสูตรวิศวกรรมซอฟต์แวร์","c":"2569-MSE-002","s":"เงินอุดหนุนทั่วไป","n":"วิทยากรบรรยายพิเศษ","f":"ดำเนินงาน","a":100000.0,"r":8000.0,"l":92000.0},{"u":"หลักสูตรวิศวกรรมซอฟต์แวร์","c":"2569-MSE-003","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนคณะกรรมการสอบวิทยานิพนธ์","f":"ดำเนินงาน","a":18000.0,"r":0.0,"l":18000.0},{"u":"หลักสูตรวิศวกรรมซอฟต์แวร์","c":"2569-MSE-004","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนคณะกรรมการสอบการค้นคว้าอิสระ","f":"ดำเนินงาน","a":30000.0,"r":6000.0,"l":24000.0},{"u":"หลักสูตรวิศวกรรมซอฟต์แวร์","c":"2569-MSE-005","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนสอบ Comprehensive","f":"ดำเนินงาน","a":12000.0,"r":10400.0,"l":1600.0},{"u":"หลักสูตรวิศวกรรมซอฟต์แวร์","c":"2569-MSE-006","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหารว่างและเครื่องดื่มในการประชุม","f":"ดำเนินงาน","a":18000.0,"r":6378.0,"l":11622.0},{"u":"หลักสูตรวิศวกรรมซอฟต์แวร์","c":"2569-MSE-P1-004","s":"เงินอุดหนุนทั่วไป","n":"กิจกรรมสานสัมพันธ์นักศึกษาในหลักสูตรวิศวกรรมซอฟต์แวร์ ป.โท","f":"โครงการ","a":40000.0,"r":27882.8,"l":18273.2},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล:การจัดการสมัยใหม่และเทคโนโลยีสารสนเทศ","c":"2569-DTM_MMIT-P1-002","s":"เงินอุดหนุนทั่วไป","n":"โครงการพัฒนาศักยภาพอาจารย์ในหลักสูตร (ศึกษาดูงาน)","f":"โครงการ","a":20000.0,"r":0.0,"l":20000.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล:การจัดการสมัยใหม่และเทคโนโลยีสารสนเทศ","c":"2569-DTM_MMIT-P1-003","s":"เงินอุดหนุนทั่วไป","n":"กิจกรรมสนับสนุนการทำวิจัย และการพัฒนาทักษะทางด้านวิชาการ (ศึกษาดูงาน)","f":"โครงการ","a":20000.0,"r":0.0,"l":20000.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล:การจัดการสมัยใหม่และเทคโนโลยีสารสนเทศ","c":"2569-DTM_MMIT-001","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนคณะกรรมการสอบปริญญานิพนธ์","f":"ดำเนินงาน","a":9600.0,"r":0.0,"l":9600.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล:การจัดการสมัยใหม่และเทคโนโลยีสารสนเทศ","c":"2569-DTM_MMIT-002","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหารและเครื่องดื่มในการประชุม","f":"ดำเนินงาน","a":2000.0,"r":0.0,"l":2000.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล:พาณิชย์อิเล็กทรอนิกส์ข้ามพรมแดน","c":"2569-DTM_CBEC-P1-001","s":"เงินอุดหนุนทั่วไป","n":"Business Matching & Coaching & พัฒนาสื่อการเรียนการสอนแบบออนไลน์","f":"โครงการ","a":233200.0,"r":53620.6,"l":179579.4},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล:พาณิชย์อิเล็กทรอนิกส์ข้ามพรมแดน","c":"2569-DTM_CBEC-P1-003","s":"เงินอุดหนุนทั่วไป","n":"ทุนสนับสนุนการทำวิจัย และการพัฒนาทักษะทางด้านวิชาการ (ศึกษาดูงาน)","f":"โครงการ","a":45000.0,"r":0.0,"l":45000.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล:พาณิชย์อิเล็กทรอนิกส์ข้ามพรมแดน","c":"2569-DTM_CBEC-P1-004","s":"เงินอุดหนุนทั่วไป","n":"ค่าการตลาดและประชาสัมพันธ์","f":"โครงการ","a":30000.0,"r":0.0,"l":30000.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล:พาณิชย์อิเล็กทรอนิกส์ข้ามพรมแดน","c":"2569-DTM_CBEC-P1-005","s":"เงินอุดหนุนทั่วไป","n":"จ้างเหมาเจ้าหน้าที่ดำเนินงานกิจกรรมหลักสูตรการจัดการเทคโนโลยีดิจิทัล แขนงพาณิชย์อิเล็กทรอนิกส์ข้ามพรมแดน","f":"โครงการ","a":144000.0,"r":144000.0,"l":0.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล:พาณิชย์อิเล็กทรอนิกส์ข้ามพรมแดน","c":"2569-DTM_CBEC-001","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนคณะกรรมการสอบปริญญานิพนธ์","f":"ดำเนินงาน","a":71200.0,"r":12400.0,"l":58800.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล:พาณิชย์อิเล็กทรอนิกส์ข้ามพรมแดน","c":"2569-DTM_CBEC-002","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนคณะกรรมการสอบประมวลความรู้ ป.โท","f":"ดำเนินงาน","a":9600.0,"r":9600.0,"l":0.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล:พาณิชย์อิเล็กทรอนิกส์ข้ามพรมแดน","c":"2569-DTM_CBEC-004","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหารและเครื่องดื่มในการประชุม","f":"ดำเนินงาน","a":5000.0,"r":2025.0,"l":2975.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล:พาณิชย์อิเล็กทรอนิกส์ข้ามพรมแดน","c":"2569-DTM_CBEC-005","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนอาจารย์ผู้สอนภาคพิเศษ หลักสูตรการจัดการเทคโนโลยีดิจิทัล แขนงพาณิชย์อิเล็กทรอนิกส์ข้ามพรมแดน","f":"ดำเนินงาน","a":342000.0,"r":134400.0,"l":207600.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล:พาณิชย์อิเล็กทรอนิกส์ข้ามพรมแดน","c":"2569-DTM_CBEC-006","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนวิทยากรพิเศษ หลักสูตรจัดการเทคโนโลยีดิจิทัล (CBEC)","f":"ดำเนินงาน","a":108000.0,"r":0.0,"l":108000.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล:เกมดิจิทัล","c":"2569-DTM_DG-003","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนคณะกรรมการสอบปริญญานิพนธ์","f":"ดำเนินงาน","a":2400.0,"r":0.0,"l":2400.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล:เกมดิจิทัล","c":"2569-DTM_DG-004","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหารเครื่องดื่มในการประชุม","f":"ดำเนินงาน","a":1000.0,"r":193.0,"l":807.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล:เกมดิจิทัล","c":"2569-DTM_DG-005","s":"เงินอุดหนุนทั่วไป","n":"ค่าหนังสือ","f":"ดำเนินงาน","a":5000.0,"r":0.0,"l":5000.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล:เกมดิจิทัล","c":"2569-DTM_DG-006","s":"เงินอุดหนุนทั่วไป","n":"ค่า licence (over leaf)","f":"ดำเนินงาน","a":15000.0,"r":0.0,"l":15000.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล:แอนนิเมชันและวิชวลเอฟเฟกต์","c":"2569-DTM_VFX-001","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหารเครื่องดื่มในการประชุม","f":"ดำเนินงาน","a":1000.0,"r":880.0,"l":120.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล:แอนนิเมชันและวิชวลเอฟเฟกต์","c":"2569-DTM_VFX-002","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนคณะกรรมการสอบวิทยานิพนธ์","f":"ดำเนินงาน","a":4800.0,"r":0.0,"l":4800.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล:แอนนิเมชันและวิชวลเอฟเฟกต์","c":"2569-DTM_VFX-P1-001","s":"เงินอุดหนุนทั่วไป","n":"สัมมนานักศึกษา และจัดนิทรรศการนักศึกษา","f":"โครงการ","a":50520.0,"r":220.0,"l":50300.0},{"u":"หลักสูตรวิศวกรรมซอฟต์แวร์(นานาชาติ)","c":"2569-SE-P1-001","s":"เงินอุดหนุนทั่วไป","n":"โครงการศึกษาดูงานของนักศึกษาหลักสูตรวิศวกรรมซอฟต์แวร์ (นานาชาติ) ชั้นปีที่ 3","f":"โครงการ","a":321000.0,"r":321000.0,"l":10419.35},{"u":"หลักสูตรวิศวกรรมซอฟต์แวร์(นานาชาติ)","c":"2569-SE-P1-002","s":"เงินอุดหนุนทั่วไป","n":"นิทรรศการแสดงผลงานนักศึกษา (Show Pro) ในกระบวนวิชา 953499","f":"โครงการ","a":125000.0,"r":0.0,"l":125000.0},{"u":"หลักสูตรวิศวกรรมซอฟต์แวร์(นานาชาติ)","c":"2569-SE-001","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหาร อาหารว่าง และเครื่องดื่มการประชุม","f":"ดำเนินงาน","a":28000.0,"r":7081.0,"l":20919.0},{"u":"หลักสูตรวิศวกรรมซอฟต์แวร์(นานาชาติ)","c":"2569-SE-003","s":"เงินอุดหนุนทั่วไป","n":"โครงการวิชา Module (อาจารย์ต่างชาติ และ/หรือ อาจารย์คนไทย)","f":"ดำเนินงาน","a":800000.0,"r":100000.0,"l":700000.0},{"u":"หลักสูตรวิศวกรรมซอฟต์แวร์(นานาชาติ)","c":"2569-SE-004","s":"เงินอุดหนุนทั่วไป","n":"สนับสนุนการดำเนินการเชิญผู้เชี่ยวชาญจากอุตสาหกรรม หรือสังคมชุมชนมาทำการสอน (หลักสูตรวิศวกรรมซอฟต์แวร์(นานาชาติ)","f":"ดำเนินงาน","a":148000.0,"r":100850.0,"l":53533.98},{"u":"หลักสูตรแอนนิเมชันและวิชวลเอฟเฟกต์","c":"2569-AFX-001","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหาร อาหารว่างและเครื่องดื่ม","f":"ดำเนินงาน","a":28000.0,"r":10668.0,"l":17332.0},{"u":"หลักสูตรแอนนิเมชันและวิชวลเอฟเฟกต์","c":"2569-AFX-P1-001","s":"เงินอุดหนุนทั่วไป","n":"โครงการศึกษาดูงานสาขาวิชาแอนนิเมชันฯ","f":"โครงการ","a":333000.0,"r":333000.0,"l":0.0},{"u":"หลักสูตรแอนนิเมชันและวิชวลเอฟเฟกต์","c":"2569-AFX-002","s":"เงินอุดหนุนทั่วไป","n":"จัดซื้อวัสดุในรายวิชา","f":"ดำเนินงาน","a":58000.0,"r":8000.0,"l":50000.0},{"u":"หลักสูตรแอนนิเมชันและวิชวลเอฟเฟกต์","c":"2569-AFX-003","s":"เงินอุดหนุนทั่วไป","n":"ศึกษาดูงานรายวิชา 951345 : ART AND NEW MEDIA EXHIBITION","f":"ดำเนินงาน","a":30000.0,"r":0.0,"l":30000.0},{"u":"หลักสูตรแอนนิเมชันและวิชวลเอฟเฟกต์","c":"2569-AFX-004","s":"เงินอุดหนุนทั่วไป","n":"โครงการนำนักศึกษาไปร่างภาพนอกสถานที่กระบวนวิชา 951103 : Sketch Drawing","f":"ดำเนินงาน","a":9750.0,"r":0.0,"l":9750.0},{"u":"หลักสูตรแอนนิเมชันและวิชวลเอฟเฟกต์","c":"2569-AFX-P1-002","s":"เงินอุดหนุนทั่วไป","n":"โครงการนิทรรศการโครงงานนักศึกษา สาขาวิชาแอนนิเมชัน (Ani Project)","f":"โครงการ","a":150000.0,"r":150000.0,"l":7746.0},{"u":"หลักสูตรแอนนิเมชันและวิชวลเอฟเฟกต์","c":"2569-AFX-005","s":"เงินอุดหนุนทั่วไป","n":"สนับสนุนการดำเนินการเชิญผู้เชี่ยวชาญจากอุตสาหกรรม หรือสังคมชุมชนมาทำการสอน(หลักสูตรแอนนิเมชันและวิชวลเอฟเฟกต์)","f":"ดำเนินงาน","a":355200.0,"r":114693.85,"l":255620.01},{"u":"หลักสูตรการจัดการสมัยใหม่ฯ","c":"2569-MMIT-004","s":"เงินอุดหนุนทั่วไป","n":"กิจกรรมในรายวิชา ปีการศึกษา 2568-2569","f":"ดำเนินงาน","a":30000.0,"r":23780.0,"l":6220.0},{"u":"หลักสูตรการจัดการสมัยใหม่ฯ","c":"2569-MMIT-005","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหาร อาหารว่าง และเครื่องดื่มรับรองประชุมสาขา","f":"ดำเนินงาน","a":28000.0,"r":14825.0,"l":13175.0},{"u":"หลักสูตรการจัดการสมัยใหม่ฯ","c":"2569-MMIT-P1-002","s":"เงินอุดหนุนทั่วไป","n":"โครงการรายงานผลการดำเนินการเรียนการสอน ปีการศึกษา 2568 (มคอ.7)","f":"โครงการ","a":20000.0,"r":0.0,"l":20000.0},{"u":"หลักสูตรการจัดการสมัยใหม่ฯ","c":"2569-MMIT-P1-003","s":"เงินอุดหนุนทั่วไป","n":"กิจกรรมสัมมนาอาจารย์เพื่อพัฒนาเนื้อหาวิชากลุ่ม IT / MM","f":"โครงการ","a":18240.0,"r":18206.58,"l":33.42},{"u":"หลักสูตรการจัดการสมัยใหม่ฯ","c":"2569-MMIT-009","s":"เงินอุดหนุนทั่วไป","n":"วัสดุในรายวิชา ภาคเรียนที่ 2/2568-1/2569","f":"ดำเนินงาน","a":132000.0,"r":68940.0,"l":63750.0},{"u":"หลักสูตรการจัดการสมัยใหม่ฯ","c":"2569-MMIT-010","s":"เงินอุดหนุนทั่วไป","n":"สนับสนุนการดำเนินการเชิญผู้เชี่ยวชาญจากอุตสาหกรรม หรือสังคมชุมชนมาทำการสอน (หลักสูตรการจัดการสมัยใหม่และเทคโนโยลีสารสนเทศ)","f":"ดำเนินงาน","a":86500.0,"r":16500.0,"l":70428.0},{"u":"หลักสูตรดิจิทัลเกม","c":"2569-DG-P1-001","s":"เงินอุดหนุนทั่วไป","n":"โครงการศึกษาดูงานนักศึกษาชั้นปีที่ 3 สาขาวิชาดิจิทัลเกม ประจำปีการศึกษา 2568","f":"โครงการ","a":322938.29,"r":322938.29,"l":0.0},{"u":"หลักสูตรดิจิทัลเกม","c":"2569-DG-001","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหาร อาหารว่างและเครื่องดื่ม","f":"ดำเนินงาน","a":20000.0,"r":11678.0,"l":8322.0},{"u":"หลักสูตรดิจิทัลเกม","c":"2569-DG-002","s":"เงินอุดหนุนทั่วไป","n":"สนับสนุนการดำเนินการเชิญผู้เชี่ยวชาญจากอุตสาหกรรม หรือสังคมชุมชนมาทำการสอน(หลักสูตรดิจิทัลเกม)","f":"ดำเนินงาน","a":193500.0,"r":29600.0,"l":166062.31},{"u":"หลักสูตรดิจิทัลเกม","c":"2569-DG-003","s":"เงินอุดหนุนทั่วไป","n":"ประชุม มคอ.7 ของสาขาวิชาดิจิทัลเกม","f":"ดำเนินงาน","a":8000.0,"r":1190.0,"l":6810.0},{"u":"หลักสูตรดิจิทัลเกม","c":"2569-DG-P1-002","s":"เงินอุดหนุนทั่วไป","n":"โครงการ Global Game Jam 2026","f":"โครงการ","a":118000.0,"r":118000.0,"l":0.0},{"u":"หลักสูตรดิจิทัลเกม","c":"2569-DG-P1-003","s":"เงินอุดหนุนทั่วไป","n":"โครงการ Exhibition Show (Digital Game Show)","f":"โครงการ","a":35000.0,"r":17010.0,"l":19316.0},{"u":"หลักสูตรดิจิทัลเกม","c":"2569-DG-004","s":"เงินอุดหนุนทั่วไป","n":"ค่าวัสดุของกระบวนวิชาที่ใช้ในการเรียนการสอน","f":"ดำเนินงาน","a":39000.0,"r":3000.0,"l":36000.0},{"u":"หลักสูตรบูรณาการอุตสาหกรรมดิจิทัล","c":"2569-DII-001","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหาร อาหารว่างและเครื่องดื่ม","f":"ดำเนินงาน","a":28800.0,"r":15792.0,"l":13008.0},{"u":"หลักสูตรบูรณาการอุตสาหกรรมดิจิทัล","c":"2569-DII-009","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนวิทยากร","f":"ดำเนินงาน","a":50000.0,"r":0.0,"l":50000.0},{"u":"หลักสูตรบูรณาการอุตสาหกรรมดิจิทัล","c":"2569-DII-010","s":"เงินอุดหนุนทั่วไป","n":"ค่าไปรษณีย์","f":"ดำเนินงาน","a":6000.0,"r":4705.0,"l":1295.0},{"u":"หลักสูตรบูรณาการอุตสาหกรรมดิจิทัล","c":"2569-DII-012","s":"เงินอุดหนุนทั่วไป","n":"ค่าเดินทางนิเทศนักศึกษา","f":"ดำเนินงาน","a":180000.0,"r":13412.29,"l":166587.71},{"u":"หลักสูตรบูรณาการอุตสาหกรรมดิจิทัล","c":"2569-DII-P1-001","s":"เงินอุดหนุนทั่วไป","n":"โครงการพัฒนากระบวนวิชาภาษาอังกฤษ สำหรับบูรณาการอุตสาหกรรม รหัสวิชา 955202 และ 955203","f":"โครงการ","a":180000.0,"r":162000.0,"l":18000.0},{"u":"หลักสูตรบูรณาการอุตสาหกรรมดิจิทัล","c":"2569-DII-013","s":"เงินอุดหนุนทั่วไป","n":"ค่าเดินทางนิเทศนักศึกษา","f":"ดำเนินงาน","a":222507.71,"r":178745.68,"l":61573.79},{"u":"หลักสูตรภาพยนต์ดิจิตอล","c":"2569-DF-001","s":"เงินอุดหนุนทั่วไป","n":"โครงการนำนักศึกษาไปร่างภาพนอกสถานที่กระบวนวิชา 951107 : Drawing for Digital Film","f":"ดำเนินงาน","a":10500.0,"r":0.0,"l":10500.0},{"u":"หลักสูตรภาพยนต์ดิจิตอล","c":"2569-DF-002","s":"เงินอุดหนุนทั่วไป","n":"สนับสนุนการดำเนินการเชิญผู้เชี่ยวชาญจากอุตสาหกรรม หรือสังคมชุมชนมาทำการสอน(หลักสูตรภาพยนตร์ดิจิทัล)","f":"ดำเนินงาน","a":28400.0,"r":25400.0,"l":10920.87},{"u":"ยุทธศาสตร์","c":"2569-STG-001","s":"เงินอุดหนุนทั่วไป","n":"CAMT FEST 2025 (Creative Digital & Tech Innovation)","f":"ดำเนินงาน","a":1239180.0,"r":1239300.0,"l":-120.0},{"u":"ยุทธศาสตร์","c":"2569-STG-002","s":"เงินอุดหนุนทั่วไป","n":"SO1 ACT1.1 ANIMS STUDIO","f":"โครงการ","a":100000.0,"r":14400.0,"l":85600.0},{"u":"ยุทธศาสตร์","c":"2569-STG-003","s":"เงินอุดหนุนทั่วไป","n":"SO1 ACT1.2 ICAT STUDIO : Digital Twin & Immersive Reality-Development of Next-Generation Digital Twin Engine","f":"โครงการ","a":400000.0,"r":368800.0,"l":31200.0},{"u":"ยุทธศาสตร์","c":"2569-STG-004","s":"เงินอุดหนุนทั่วไป","n":"SO1 ACT1.3 NAPLAB STUDIO","f":"โครงการ","a":100000.0,"r":0.0,"l":100000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-005","s":"เงินอุดหนุนทั่วไป","n":"SO1 ACT1.4 DS STUDIO (Digital Solution)","f":"โครงการ","a":100000.0,"r":0.0,"l":100000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-006","s":"เงินอุดหนุนทั่วไป","n":"SO1 ACT1.5 SOPRA STUDIO : โครงการบ่มเพาะนวัตกรดิจิทัลด้านการเรียนรู้การทำงานร่วมกับชุมชน (Social Practice Studio)","f":"โครงการ","a":100000.0,"r":897.0,"l":99103.0},{"u":"ยุทธศาสตร์","c":"2569-STG-007","s":"เงินอุดหนุนทั่วไป","n":"SO1 ACT1.6 UEDA Lab : โครงการพัฒนาต้นแบบระบบกล้องวงจรปิดอัจฉริยะเพื่อการเรียนรู้เชิงปฏิบัติการ ภายใต้ Urban & Environmental Autonomous Drone and AI Lab","f":"โครงการ","a":100000.0,"r":100000.0,"l":0.0},{"u":"ยุทธศาสตร์","c":"2569-STG-008","s":"เงินอุดหนุนทั่วไป","n":"SO1 ACT 4 : โครงการพัฒนากระบวนวิชาแบบ Stackable Micro-credentials ด้วยแนวคิด Lego-style Learning และการออกแบบการเรียนรู้เชิงสร้างสรรค์","f":"โครงการ","a":200000.0,"r":12600.0,"l":188430.0},{"u":"ยุทธศาสตร์","c":"2569-STG-009","s":"เงินอุดหนุนทั่วไป","n":"SO2 ACT 5.3 กิจกรรมการขอรับการรับรองการประเมินผล Social Impact (SROI) กับหน่วยงานที่มีความเชี่ยวชาญในการรับรองผลการประเมินของวิทยาลัยฯ","f":"โครงการ","a":100000.0,"r":0.0,"l":100000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-010","s":"เงินอุดหนุนทั่วไป","n":"SO2 ACT 6.2 การต่อยอดผลงานวิจัยสู่เชิงพาณิชย์ (CMU-RL 8–9)","f":"โครงการ","a":400000.0,"r":0.0,"l":400000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-011","s":"เงินอุดหนุนทั่วไป","n":"SO1 ACT3 Reskill/Upskill/New skill","f":"โครงการ","a":9000.0,"r":9000.0,"l":0.0},{"u":"ยุทธศาสตร์","c":"2569-STG-012","s":"เงินอุดหนุนทั่วไป","n":"SO2 ACT 6.3 การยกระดับงานเชิงสร้างสรรค์ให้เป็นเชิงวิชาการ","f":"โครงการ","a":16900.0,"r":21900.0,"l":-5000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-013","s":"เงินอุดหนุนทั่วไป","n":"SO1 ACT1.7 Office turnPRO : โครงการพื้นที่สร้างสรรค์สําหรับการเปลี่ยนผ่านสู่มืออาชีพ","f":"โครงการ","a":100000.0,"r":45600.0,"l":54400.0},{"u":"ยุทธศาสตร์","c":"2569-STG-014","s":"เงินอุดหนุนทั่วไป","n":"SO1 ACT1.8 CGraph Lab and Studio : โครงการพัฒนาศักยภาพนักออกแบบผลิตภัณฑ์และของที่ระลึกเชิงสร้างสรรค์","f":"โครงการ","a":100000.0,"r":12000.0,"l":88000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-015","s":"เงินอุดหนุนทั่วไป","n":"SO1 ACT1.9 E-Sports : นวัตกรรมระบบความเป็นจริงเสริมและเสมือนในการเรียนรู้ทักษะสำหรับพัฒนากำลังคนในอุตสาหกรรมเศรษฐกิจสร้างสรรค์ด้านอีสปอร์ต","f":"โครงการ","a":100000.0,"r":15000.0,"l":85000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-016","s":"เงินอุดหนุนทั่วไป","n":"SO1 Series : โครงการการออกแบบผลิตภัณฑ์แผนไทยพลิกโฉมสมุนไพรใส่ดีไซน์สร้างมูลค่า","f":"โครงการ","a":100000.0,"r":100000.0,"l":0.0},{"u":"ยุทธศาสตร์","c":"2569-STG-017","s":"เงินอุดหนุนทั่วไป","n":"SO1 Series : โครงการพัฒนาเกมกระดานเพื่อเสริมสร้างความรู้เท่าทันอาชญากรรมไซเบอร์สำหรับเยาวชนไทย","f":"โครงการ","a":50000.0,"r":25455.0,"l":25057.0},{"u":"ยุทธศาสตร์","c":"2569-STG-018","s":"เงินอุดหนุนทั่วไป","n":"SO1 Series : โครงการพัฒนา Playable Ads Design Assistant Platform เพื่อสนับสนุนการเรียนการสอนด้านการออกแบบสื่อเชิงโต้ตอบ","f":"โครงการ","a":50000.0,"r":9850.0,"l":40150.0},{"u":"ยุทธศาสตร์","c":"2569-STG-019","s":"เงินอุดหนุนทั่วไป","n":"SO1 Series : โครงการพัฒนาแพลตฟอร์ม iCAS CMU HUB แพลตฟอร์มลดขั้นตอนเอกสาร เพิ่มประสิทธิภาพ เพื่อเชื่อมชมรมและสโมสรนักศึกษาเข้าหากันอย่างเป็นระบบ","f":"โครงการ","a":50000.0,"r":22000.0,"l":28000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-020","s":"เงินอุดหนุนทั่วไป","n":"SO1 Series : โครงการพัฒนาแพลตฟอร์ม CMU Share Cycle เพื่อแลกเปลี่ยนของเหลือใช้ภายในมหาวิทยาลัยเชียงใหม่","f":"โครงการ","a":50000.0,"r":22000.0,"l":28000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-021","s":"เงินอุดหนุนทั่วไป","n":"SO2 Series : โครงการระบบวิเคราะห์ฝูงชนและพฤติกรรมการท่องเที่ยวเพื่อเมืองอัจฉริยะในเขตนิมมานเหมินทร์ Crowd Monitoring and Tourist Behavior Analysis for Nimman Smart City","f":"โครงการ","a":100000.0,"r":100000.0,"l":0.0},{"u":"ยุทธศาสตร์","c":"2569-STG-022","s":"เงินอุดหนุนทั่วไป","n":"SO2 Series : โครงการ Generative AI สำหรับสร้างเกมต้นแบบ Generative AI for cognitive game prototype","f":"โครงการ","a":100000.0,"r":30500.0,"l":69992.7},{"u":"ยุทธศาสตร์","c":"2569-STG-023","s":"เงินอุดหนุนทั่วไป","n":"SO2 Series : โครงการพัฒนาต้นแบบนวัตกรรมดิจิทัลเพื่อการแก้ปัญหาเมืองและสนับสนุนการบริหารจัดการท้องถิ่นพื้นที่ จ.เชียงใหม่ และ จ.น่าน","f":"โครงการ","a":100000.0,"r":0.0,"l":100000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-024","s":"เงินอุดหนุนทั่วไป","n":"SO2 Series : โครงการ AeroVerse แพลตฟอร์มเสมือนจริงสำหรับการจำลองและประเมินทักษะการปฏิบัติการอากาศยานไร้คนขับ (UAV)","f":"โครงการ","a":100000.0,"r":71920.0,"l":28080.0},{"u":"ยุทธศาสตร์","c":"2569-STG-025","s":"เงินอุดหนุนทั่วไป","n":"SO1 Series : CAMT’s LIFE","f":"โครงการ","a":50000.0,"r":45000.0,"l":5000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-026","s":"เงินอุดหนุนทั่วไป","n":"SO2 Series : โครงการ DG Publishing House","f":"โครงการ","a":100000.0,"r":0.0,"l":100000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-028","s":"เงินอุดหนุนทั่วไป","n":"SO1 Series : Cyber Hunter: ล่ากลโกงออนไลน์","f":"โครงการ","a":50000.0,"r":50000.0,"l":0.0},{"u":"ยุทธศาสตร์","c":"2569-STG-029","s":"เงินอุดหนุนทั่วไป","n":"SO2 Series : โครงการการพัฒนาหลักสูตรสมรรถนะด้านการท่องเที่ยวและเทคโนโลยีสมัยใหม่","f":"โครงการ","a":100000.0,"r":86800.0,"l":13200.0},{"u":"ยุทธศาสตร์","c":"2569-STG-030","s":"เงินอุดหนุนทั่วไป","n":"SO2 Series : โครงการการพัฒนาทักษะสีเขียวเพื่อเสริมสร้างความยั่งยืน ในอุตสาหกรรมท่องเที่ยวและบริการ","f":"โครงการ","a":100000.0,"r":43190.0,"l":56810.0},{"u":"ยุทธศาสตร์","c":"2569-STG-031","s":"เงินอุดหนุนทั่วไป","n":"SO2 Series : โครงการพัฒนาต้นแบบนวัตกรรมดิจิทัลเพื่อการแก้ปัญหาเมืองและสนับสนุนการบริหารจัดการท้องถิ่นพื้นที่ จ.ลําปาง จ.ลําพูน และ จ.ชลบุรี","f":"โครงการ","a":100000.0,"r":13400.0,"l":86600.0},{"u":"ยุทธศาสตร์","c":"2569-STG-032","s":"เงินอุดหนุนทั่วไป","n":"SO2 Series : โครงการ Smart IoT-Boardgame นวัตกรรมบอร์ดเกมอัตโนมัติด้วย IoT สำหรับการเรียนรู้เชิงระบบ","f":"โครงการ","a":100000.0,"r":62010.0,"l":37990.0},{"u":"ยุทธศาสตร์","c":"2569-STG-033","s":"เงินอุดหนุนทั่วไป","n":"SO2 Series : โครงการระบบกล้อง AI เพื่อตรวจจับผู้ประกอบการขายอาหารนกและจัดฉากถ่ายรูปรบกวนนักท่องเที่ยวบริเวณประตูท่าแพ เพื่อสนับสนุนการทํางานของตํารวจท่องเที่ยวจังหวัดเชียงใหม่","f":"โครงการ","a":100000.0,"r":21450.0,"l":78550.0},{"u":"ยุทธศาสตร์","c":"2569-STG-034","s":"เงินอุดหนุนทั่วไป","n":"SO1 Series : โครงการพัฒนาแพลตฟอร์ม Angkaew Connect สร้างพื้นที่เชื่อมโยงนักศึกษา มช. ให้กลับมาทำกิจกรรมร่วมกัน ผ่านระบบจับคู่กิจกรรมอัจฉริยะ","f":"โครงการ","a":50000.0,"r":0.0,"l":50000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-035","s":"เงินอุดหนุนทั่วไป","n":"SO1 Series : โครงการระบบสำหรับช่วยสนับสนุนนักศึกษาในการเรียนรู้การเขียนโปรแกรมเพื่อพัฒนาทักษะการเขียนโปรแกรมและการแข่งขัน version 2","f":"โครงการ","a":50000.0,"r":0.0,"l":50000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-036","s":"เงินอุดหนุนทั่วไป","n":"SO1 Series : โครงการบูรณาการวิจัยและปฏิบัติในการพัฒนาเครื่องมือประเมิน Competency","f":"โครงการ","a":50000.0,"r":48000.0,"l":2000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-037","s":"เงินอุดหนุนทั่วไป","n":"SO2 Series : โครงการพัฒนาระบบแพลตฟอร์มจองผู้ดูแลผู้สูงอายุแบบ On-Demand เพื่อเพิ่มการเข้าถึงการดูแลที่ปลอดภัยและเชื่อถือได้ (Payung - พยุง )","f":"โครงการ","a":100000.0,"r":50000.0,"l":50000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-038","s":"เงินอุดหนุนทั่วไป","n":"SO1 Series : โครงการการออกแบบของที่ระลึกที่สะท้อนอัตลักษณ์ล้านนาสำหรับชุมชน","f":"โครงการ","a":50000.0,"r":0.0,"l":50000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-039","s":"เงินอุดหนุนทั่วไป","n":"SO2 Series : AI-Driven Routing Optimization for Sustainable Logistics Management","f":"โครงการ","a":100000.0,"r":86942.0,"l":13317.25},{"u":"ยุทธศาสตร์","c":"2569-STG-040","s":"เงินอุดหนุนทั่วไป","n":"SO2 Series : โครงการยกระดับเกษตรอัจฉริยะด้วยเทคโนโลยีปัญญาประดิษฐ์และคอมพิวเตอร์วิทัศน์ (Smart Farm AI Vision) เพื่อการผลิตที่แม่นยำและยั่งยืน","f":"โครงการ","a":100000.0,"r":75000.0,"l":25000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-041","s":"เงินอุดหนุนทั่วไป","n":"SO2 Series : โครงการพัฒนาต้นแบบแนวทางป้องกันภาวะดื้ออินซูลินแบบมีส่วนร่วมของชุมชนผ่านเทคโนโลยีตรวจจับ การเคลื่อนไหว (Smart Motion Analysis)","f":"โครงการ","a":100000.0,"r":89400.0,"l":10600.0},{"u":"ยุทธศาสตร์","c":"2569-STG-042","s":"เงินอุดหนุนทั่วไป","n":"SO1 ACT 2.1 Startup Entrepreneurship","f":"โครงการ","a":750000.0,"r":0.0,"l":750000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-043","s":"เงินอุดหนุนทั่วไป","n":"SO1 ACT 2.2 Contest Creative Digital, Tech innovation","f":"โครงการ","a":600000.0,"r":144600.0,"l":455400.0},{"u":"ยุทธศาสตร์","c":"2569-STG-044","s":"เงินอุดหนุนทั่วไป","n":"EduTransform การเรียนรู้ด้วยพลัง AI","f":"โครงการ","a":800000.0,"r":485145.0,"l":431238.64},{"u":"ยุทธศาสตร์","c":"2569-STG-012-001","s":"เงินอุดหนุนทั่วไป","n":"SO2 ACT 6.3 การยกระดับงานเชิงสร้างสรรค์ให้เป็นเชิงวิชาการ","f":"โครงการ","a":227100.0,"r":144000.0,"l":83100.0},{"u":"ยุทธศาสตร์","c":"2569-STG-P3-002","s":"เงินอุดหนุนทั่วไป","n":"SO2 ACT6.1 การผลิตผลงานต้นแบบเพื่อสร้างความสามารถในการแข่งขันของ Lab","f":"โครงการ","a":356000.0,"r":0.0,"l":356000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-P3-003","s":"เงินอุดหนุนทั่วไป","n":"AI Hackathon for Admin: การอบรมเชิงปฏิบัติการการประยุกต์ใช้ปัญญาประดิษฐ์ (AI) เพื่อพัฒนาประสิทธิภาพการปฏิบัติงานของบุคลากร","f":"โครงการ","a":360000.0,"r":224731.95,"l":135268.05},{"u":"ยุทธศาสตร์","c":"2569-STG-P3-004","s":"เงินอุดหนุนทั่วไป","n":"SO2 ACT5.1.1 โครงการเตรียมความพร้อมสินค้า SMEs ไทยเพื่อเข้าสู่ตลาดจีนผ่าน CBEC","f":"โครงการ","a":50000.0,"r":21000.0,"l":29000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-P3-005","s":"เงินอุดหนุนทั่วไป","n":"SO2 ACT5.1.2 โครงการพัฒนาทักษะการเป็น “นักประกอบการเพื่อสังคมชุมชน” สำหรับนักศึกษาระดับปริญญาตรี รุ่นที่1","f":"โครงการ","a":50000.0,"r":24000.0,"l":26000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-P3-006","s":"เงินอุดหนุนทั่วไป","n":"SO2 ACT5.1.3 โครงการพัฒนาทักษะการเป็น “นักประกอบการเพื่อสังคมชุมชน” สำหรับนักศึกษาระดับปริญญาตรี รุ่นที่2","f":"โครงการ","a":50000.0,"r":0.0,"l":50000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-P3-007","s":"เงินอุดหนุนทั่วไป","n":"SO1 ACT1.11 NextLab: Beyond Code. We Built for What’s Next","f":"โครงการ","a":100000.0,"r":0.0,"l":100000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-P3-008","s":"เงินอุดหนุนทั่วไป","n":"บริการวิชาการและรับใช้สังคม วิทยาลัยศิลปะ สื่อ และเทคโนโลยี","f":"โครงการ","a":35350.0,"r":35350.0,"l":8345.0},{"u":"ยุทธศาสตร์","c":"2569-STG-P3-009","s":"เงินอุดหนุนทั่วไป","n":"SO1 ACT1.12 CMU Digital Creator & Influencer Hub","f":"โครงการ","a":32000.0,"r":0.0,"l":32000.0},{"u":"ยุทธศาสตร์","c":"2569-STG-011-001","s":"เงินอุดหนุนทั่วไป","n":"SO1 ACT3 Reskill/Upskill/New skill","f":"โครงการ","a":1491000.0,"r":522800.0,"l":968200.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล","c":"2569-DTM-P3-001","s":"เงินอุดหนุนทั่วไป","n":"กิจกรรมสนับสนุนส่งเสริมและพัฒนางานวิชาการนักศึกษา","f":"โครงการ","a":138120.0,"r":138120.0,"l":5925.76},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล","c":"2569-DTM-001","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหารและเครื่องดื่มในการประชุม","f":"ดำเนินงาน","a":5000.0,"r":0.0,"l":5000.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล","c":"2569-DTM-002","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนคณะกรรมการสอบวัดคุณสมบัติ ระดับปริญญาเอก","f":"ดำเนินงาน","a":21600.0,"r":0.0,"l":21600.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล","c":"2569-DTM-P3-002","s":"เงินอุดหนุนทั่วไป","n":"กิจกรรมสัมมนานักศึกษาในหลักสูตร","f":"โครงการ","a":250000.0,"r":0.0,"l":250000.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล","c":"2569-DTM-001","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหารและเครื่องดื่มในการประชุม","f":"ดำเนินงาน","a":5000.0,"r":1029.0,"l":3971.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล","c":"2569-DTM-P3-001","s":"เงินอุดหนุนทั่วไป","n":"โครงการจัดงานประชุมวิชาการระดับชาติ National Conference on Digital Innovation & Transformation","f":"โครงการ","a":80000.0,"r":40000.0,"l":40000.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล","c":"2569-DTM-P3-002","s":"เงินอุดหนุนทั่วไป","n":"ติดตามความก้าวหน้าด้านงานวิจัยของนักศึกษา","f":"โครงการ","a":52840.0,"r":0.0,"l":52840.0},{"u":"หลักสูตรการจัดการเทคโนโลยีดิจิทัล","c":"2569-DTM-002","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนคณะกรรมการสอบปริญญานิพนธ์","f":"ดำเนินงาน","a":13200.0,"r":9400.0,"l":3800.0},{"u":"หน่วยบริการการศึกษา","c":"2569-EDU-001","s":"เงินอุดหนุนทั่วไป","n":"เครื่องย่อยเอกสาร","f":"ดำเนินงาน","a":9149.0,"r":9149.0,"l":0.0},{"u":"หน่วยบริการการศึกษา","c":"2569-EDU-002","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหาร อาหารว่างและเครื่องดื่ม","f":"ดำเนินงาน","a":3928.0,"r":3928.0,"l":0.0},{"u":"หน่วยบริการการศึกษา","c":"2569-EDU-003","s":"เงินอุดหนุนทั่วไป","n":"ค่าล่วงเวลา","f":"ดำเนินงาน","a":6160.0,"r":6160.0,"l":0.0},{"u":"หน่วยบริการการศึกษา","c":"2569-EDU-004","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนคณะกรรมการบัณฑิตศึกษาประจำคณะ","f":"ดำเนินงาน","a":37000.0,"r":0.0,"l":37000.0},{"u":"หน่วยบริการการศึกษา","c":"2569-EDU-005","s":"เงินอุดหนุนทั่วไป","n":"ค่าตอบแทนอาจารย์ผู้สอนหลักสูตรร่วม ระดับบัณฑิตศึกษา","f":"ดำเนินงาน","a":417600.0,"r":417600.0,"l":0.0},{"u":"หน่วยบริการการศึกษา","c":"2569-EDU-P1-001","s":"เงินอุดหนุนทั่วไป","n":"การรับนักศึกษาระดับปริญญาตรี (TCAS,IPAS) ประจำปีการศึกษา 2569","f":"โครงการ","a":68000.0,"r":32010.0,"l":42699.0},{"u":"หน่วยบริการการศึกษา","c":"2569-EDU-P1-002","s":"เงินอุดหนุนทั่วไป","n":"การพัฒนาปรับปรุงหลักสูตรระดับปริญญาตรีและบัณฑิตศึกษา","f":"โครงการ","a":80000.0,"r":19190.0,"l":60810.0},{"u":"หน่วยบริการการศึกษา","c":"2569-EDU-P1-003","s":"เงินอุดหนุนทั่วไป","n":"โครงการกิจกรรมฝึกซ้อมใหักับบัณฑิตเพื่อเข้ารับพระราชทานปริญญาบัตร และงานเลี้ยงแสดงความยินดีกับบัณฑิตใหม่ ครั้งที่ 60","f":"โครงการ","a":270903.05,"r":270903.05,"l":0.0},{"u":"หน่วยบริการการศึกษา","c":"2569-EDU-P1-004","s":"เงินอุดหนุนทั่วไป","n":"ปฐมนิเทศนักศึกษาใหม่ ระดับปริญญาตรี และกิจกรรม Pre–College ประจำปีการศึกษา 2569","f":"โครงการ","a":200000.0,"r":126100.0,"l":76296.4},{"u":"หน่วยบริการการศึกษา","c":"2569-EDU-P1-005","s":"เงินอุดหนุนทั่วไป","n":"โครงการทุนสนับสนุนค่าธรรมเนียมการศึกษาระดับบัณฑิตศึกษา ปีการศึกษา 2568-2569","f":"โครงการ","a":1210000.0,"r":960000.0,"l":250000.0},{"u":"หน่วยบริการการศึกษา","c":"2569-EDU-P1-006","s":"เงินอุดหนุนทั่วไป","n":"ทุนสนับสนุนงานวิจัยเพื่อตีพิมพ์หรือเผยแพร่ผลงานทางวิชาการ","f":"โครงการ","a":80000.0,"r":52000.0,"l":28000.0},{"u":"หน่วยบริการการศึกษา","c":"2569-EDU-P1-007","s":"เงินอุดหนุนทั่วไป","n":"กิจกรรมรับเข้าศึกษาต่อระดับบัณฑิตศึกษา (GPAS) ภาคการศึกษาที่ 2/2568, 1/2569 และรอบพิเศษ","f":"โครงการ","a":4000.0,"r":0.0,"l":4000.0},{"u":"หน่วยบริการการศึกษา","c":"2569-EDU-P1-008","s":"เงินอุดหนุนทั่วไป","n":"CAMT Ed-Connect: เชื่อมโยงทุกเรื่องการศึกษา","f":"โครงการ","a":25000.0,"r":10000.0,"l":17548.0},{"u":"หน่วยบริการการศึกษา","c":"2569-EDU-006","s":"เงินอุดหนุนทั่วไป","n":"ค่าอาหาร อาหารว่างและเครื่องดื่ม","f":"ดำเนินงาน","a":19482.0,"r":5869.0,"l":13613.0},{"u":"หน่วยบริการการศึกษา","c":"2569-EDU-007","s":"เงินอุดหนุนทั่วไป","n":"ค่าล่วงเวลา","f":"ดำเนินงาน","a":82440.0,"r":47040.0,"l":35400.0}];
+let fil=[...D],abk=null,bChart=null;
+
+// Init
+window.addEventListener('load',()=>{
+  // Year selector
+  const ys=document.getElementById('selY');
+  for(let y=2568;y<=2580;y++){const o=document.createElement('option');o.value=y;o.textContent=y;if(y===2569)o.selected=true;ys.appendChild(o);}
+  updateMonthLabel();
+  // Unit filter
+  const us=[...new Set(D.map(r=>r.u))].sort();
+  const usel=document.getElementById('fU');
+  usel.innerHTML='<option value="">— ทั้งหมด —</option>'+us.map(u=>`<option value="${u}">${u}</option>`).join('');
+  ['fU','fC','fT'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.addEventListener(id==='fC'?'input':'change',applyF);
+  });
+  document.getElementById('gd').textContent=new Date().toLocaleDateString('th-TH');
+  applyF();
+});
+
+
+function updateMonthLabel(){
+  const m=document.getElementById('selM').value;
+  const y=document.getElementById('selY').value;
+  const ml=document.getElementById('monthLabel');
+  const yl=document.getElementById('yearLabel');
+  if(ml)ml.textContent=m;
+  if(yl)yl.textContent=y;
+}
+
+function goTo(id,el){
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function applyF(){
+  const u=document.getElementById('fU').value;
+  const c=document.getElementById('fC').value.toLowerCase();
+  const t=document.getElementById('fT').value;
+  fil=D.filter(r=>{
+    if(u&&r.u!==u)return false;
+    if(c&&!r.c.toLowerCase().includes(c))return false;
+    if(t&&r.f!==t)return false;
+    return true;
+  });
+  document.getElementById('rc').textContent=fil.length;
+  abk=null;
+  document.querySelectorAll('.bcc').forEach(c=>c.classList.remove('active'));
+  renderAll();
+}
+
+function resetF(){
+  document.getElementById('fU').value='';
+  document.getElementById('fC').value='';
+  document.getElementById('fT').value='';
+  applyF();
+}
+
+function ftType(t){
+  const sel=document.getElementById('fT');
+  sel.value=sel.value===t?'':t;
+  applyF();
+}
+
+function getBD(){
+  if(abk===null)return fil;
+  return fil.filter(r=>{
+    const p=r.a>0?(r.r/r.a)*100:0;
+    if(abk===0)return p===0;
+    if(abk===1)return p>0&&p<=20;
+    if(abk===2)return p>20&&p<=50;
+    if(abk===3)return p>50&&p<=75;
+    if(abk===4)return p>75;
+    return true;
+  });
+}
+
+function renderAll(){
+  const d=getBD();
+  renderKPI(d);renderTypeC(d);renderHbar(d);renderBuckets();renderTable(d);updChart();
+  renderPivotTable();
+  initResizers();
+}
+
+function renderKPI(d){
+  const tA=d.reduce((s,r)=>s+r.a,0);
+  const tR=d.reduce((s,r)=>s+r.r,0);
+  const tL=d.reduce((s,r)=>s+r.l,0);
+  const p=tA>0?(tR/tA*100):0;
+  document.getElementById('k1').textContent=fmtM(tA);
+  document.getElementById('k2').textContent=fmtM(tR);
+  document.getElementById('k2s').textContent=p.toFixed(1)+'% ของจัดสรร';
+  document.getElementById('k3').textContent=fmtM(tL);
+  document.getElementById('k3s').textContent=(tA>0?(tL/tA*100).toFixed(1):0)+'% ของจัดสรร';
+  document.getElementById('k4').textContent=p.toFixed(1)+'%';
+}
+
+function renderTypeC(d){
+  const pr=d.filter(r=>r.f==='โครงการ');
+  const op=d.filter(r=>r.f==='ดำเนินงาน');
+  document.getElementById('tcp-n').textContent=pr.length+' รายการ';
+  document.getElementById('tcp-a').textContent='จัดสรร '+fmtS(pr.reduce((s,r)=>s+r.a,0))+' บาท';
+  document.getElementById('tco-n').textContent=op.length+' รายการ';
+  document.getElementById('tco-a').textContent='จัดสรร '+fmtS(op.reduce((s,r)=>s+r.a,0))+' บาท';
+  const at=document.getElementById('fT').value;
+  document.getElementById('tcp').classList.toggle('active',at==='โครงการ');
+  document.getElementById('tco').classList.toggle('active',at==='ดำเนินงาน');
+}
+
+function initChart(){ /* chart replaced with stat cards */ }
+
+function updChart(){ updBudCards(); }
+
+function updBudCards(){
+  const d=getBD();
+  const tA=d.reduce((s,r)=>s+r.a,0);
+  const tR=d.reduce((s,r)=>s+r.r,0);
+  const tb=parseFloat((document.getElementById('totBud').value||'0').replace(/,/g,''))||0;
+  const as=parseFloat((document.getElementById('actSp').value||'0').replace(/,/g,''))||0;
+
+  // Card 1: งบทั้งปี
+  const disp1=document.getElementById('totBudDisp');
+  if(disp1) disp1.textContent=tb>0?fmtN(tb):'0';
+  const pb1=document.getElementById('pb1');
+  if(pb1) pb1.style.width='100%';
+
+  // Card 2: จัดสรร (F)
+  const disp2=document.getElementById('allocDisp');
+  if(disp2) disp2.textContent=fmtN(tA);
+  const pct2=tb>0?(tA/tb*100):0;
+  const pb2=document.getElementById('pb2');
+  if(pb2) pb2.style.width=Math.min(pct2,100).toFixed(1)+'%';
+  const lbl2=document.getElementById('pct2lbl');
+  if(lbl2) lbl2.textContent=(tb>0?pct2.toFixed(1):'-')+'% ของงบประมาณทั้งปี';
+
+  // Card 3: ขออนุมัติ (G)
+  const disp3=document.getElementById('reqDisp');
+  if(disp3) disp3.textContent=fmtN(tR);
+  const pct3=tb>0?(tR/tb*100):0;
+  const pb3=document.getElementById('pb3');
+  if(pb3) pb3.style.width=Math.min(pct3,100).toFixed(1)+'%';
+  const lbl3=document.getElementById('pct3lbl');
+  if(lbl3) lbl3.textContent=(tb>0?pct3.toFixed(1):'—')+'% ของงบประมาณทั้งปี';
+  // G vs F badge
+  const gfBadge=document.getElementById('gfPctBadge');
+  if(gfBadge){
+    const gfPct=tA>0?(tR/tA*100):0;
+    gfBadge.innerHTML=tA>0
+      ?`<span style="background:#92400e;color:#fff;padding:3px 10px;border-radius:8px;font-size:12px;font-weight:700;">⚖️ ${gfPct.toFixed(1)}% ของงบจัดสรร (F)</span>`
+      :'<span style="font-size:11px;color:#92400e;opacity:.5;">กรอกงบทั้งปีเพื่อดู %</span>';
+  }
+
+  // Card 4: เบิกจ่ายจริง
+  const disp4=document.getElementById('actSpDisp');
+  if(disp4) disp4.textContent=as>0?fmtN(as):'0';
+  const pct4=tb>0?(as/tb*100):0;
+  const pb4=document.getElementById('pb4');
+  if(pb4) pb4.style.width=Math.min(pct4,100).toFixed(1)+'%';
+  const lbl4=document.getElementById('pct4lbl');
+  if(lbl4) lbl4.textContent=(tb>0&&as>0?pct4.toFixed(1):'-')+'% ของงบประมาณทั้งปี';
+}
+
+function toggleEdit(inputId,dispId){
+  const inp=document.getElementById(inputId);
+  const dsp=document.getElementById(dispId);
+  if(!inp||!dsp)return;
+  if(inp.style.display==='none'){
+    inp.style.display='block';
+    dsp.style.display='none';
+    inp.focus();
+    inp.select();
+  } else {
+    inp.style.display='none';
+    dsp.style.display='block';
+    updBudCards();
+  }
+}
+
+function renderHbar(d){
+  const grps=[
+    {k:'pr',lbl:'โครงการ',bdg:'pr',em:'📁',data:d.filter(r=>r.f==='โครงการ'),bc:'var(--pm)',yc:'#9333ea'},
+    {k:'op',lbl:'ดำเนินงาน',bdg:'op',em:'⚙️',data:d.filter(r=>r.f==='ดำเนินงาน'),bc:'#b45309',yc:'#d97706'},
+  ];
+  const mxA=Math.max(...grps.map(g=>g.data.reduce((s,r)=>s+r.a,0)),1);
+  const cnt=document.getElementById('hbs');
+  cnt.innerHTML='';
+  grps.forEach(g=>{
+    const tA=g.data.reduce((s,r)=>s+r.a,0);
+    const tR=g.data.reduce((s,r)=>s+r.r,0);
+    const tL=g.data.reduce((s,r)=>s+r.l,0);
+    const pR=tA>0?(tR/tA*100).toFixed(1):'0.0';
+    const pL=tA>0?(tL/tA*100).toFixed(1):'0.0';
+    const wP=tA>0?(tA/mxA*85):5;
+    const iP=tA>0?(tR/tA*100):0;
+    const div=document.createElement('div');
+    div.className='hr-row';
+    div.innerHTML=`
+      <div class="hr-hd">
+        <div class="hr-lbl">${g.em} <span class="hbdg ${g.bdg}">${g.lbl}</span> &nbsp;<span style="font-size:13px;color:var(--tg);font-weight:400">${g.data.length} รายการ</span></div>
+        <div class="hr-stats">
+          <div class="hst"><span class="hsv">${fmtS(tA)}</span><span style="font-size:12px;color:var(--tg)">จัดสรร</span></div>
+          <div class="hst"><span class="hsv">${fmtS(tR)}</span><span class="hss">${pR}% ของจัดสรร</span></div>
+          <div class="hst"><span class="hsv" style="color:#16a34a">${fmtS(tL)}</span><span style="font-size:12px;color:#16a34a">คงเหลือ ${pL}%</span></div>
+        </div>
+      </div>
+      <div style="position:relative;padding-right:70px;">
+        <div class="hr-trk" style="width:${wP}%">
+          <div class="hr-out" style="background:${g.bc};width:100%">
+            <div class="hr-in" style="width:${iP}%;background:var(--ym);"></div>
+            <span class="hr-end">${fmtS(tA)}</span>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:12.5px;color:var(--tg);margin-top:4px;display:flex;gap:14px;flex-wrap:wrap;">
+        <span><span style="color:${g.bc}">■</span> จัดสรร ${fmtS(tA)} บาท</span>
+        <span><span style="color:var(--ym)">■</span> ขออนุมัติ ${fmtS(tR)} บาท · <strong style="color:${g.bc}">${pR}%</strong></span>
+        <span><span style="color:#c084fc">■</span> คงเหลือ ${fmtS(tL)} บาท · <strong style="color:#16a34a">${pL}%</strong></span>
+      </div>`;
+    cnt.appendChild(div);
+  });
+}
+
+function renderBuckets(){
+  const bks=[
+    {id:0,lbl:'0%',rng:'ไม่มีการใช้',bg:'#fef2f2',tc:'#dc2626',bc:'#fecaca'},
+    {id:1,lbl:'1–20%',rng:'ใช้น้อยมาก',bg:'#fef9c3',tc:'#854d0e',bc:'#fde047'},
+    {id:2,lbl:'21–50%',rng:'ใช้น้อย',bg:'#fff7ed',tc:'#c2410c',bc:'#fdba74'},
+    {id:3,lbl:'51–75%',rng:'ใช้ปานกลาง',bg:'#f0fdf4',tc:'#15803d',bc:'#86efac'},
+    {id:4,lbl:'76–100%',rng:'ใช้มาก',bg:'#f3e8ff',tc:'#6b21a8',bc:'#c084fc'},
+  ];
+  const g=document.getElementById('bcg');
+  g.innerHTML='';
+  bks.forEach(b=>{
+    const cnt=fil.filter(r=>{
+      const p=r.a>0?(r.r/r.a)*100:0;
+      if(b.id===0)return p===0;
+      if(b.id===1)return p>0&&p<=20;
+      if(b.id===2)return p>20&&p<=50;
+      if(b.id===3)return p>50&&p<=75;
+      if(b.id===4)return p>75;
+    }).length;
+    const div=document.createElement('div');
+    div.className='bcc'+(abk===b.id?' active':'');
+    div.style.cssText=`background:${b.bg};border-color:${b.bc};`;
+    div.innerHTML=`<div class="bcp" style="color:${b.tc}">${b.lbl}</div><div class="bcr" style="color:${b.tc}">${b.rng}</div><div class="bcn" style="color:${b.tc}">${cnt}</div><div class="bcl" style="color:${b.tc}">รายการ</div>`;
+    div.onclick=()=>{abk=abk===b.id?null:b.id;renderAll();};
+    g.appendChild(div);
+  });
+}
+
+function renderBucketSummary(){ renderPivotTable(); }
+function closeBucketSummary(){ abk=null; document.querySelectorAll('.bcc').forEach(c=>c.classList.remove('active')); renderAll(); }
+
+function clickPivotHeader(bk){
+  abk = abk===bk ? null : bk;
+  document.querySelectorAll('.bcc').forEach((c,i)=>{
+    c.classList.toggle('active', i===abk);
+  });
+  renderAll();
+}
+
+function getBucket(r){
+  const p=r.a>0?(r.r/r.a)*100:0;
+  if(p===0)return 0;
+  if(p<=20)return 1;
+  if(p<=50)return 2;
+  if(p<=75)return 3;
+  return 4;
+}
+
+function renderPivotTable(){
+  const bkColors=['#dc2626','#b45309','#c2410c','#15803d','#6b21a8'];
+  const bkBg=['#fef2f2','#fef9c3','#fff7ed','#f0fdf4','#f3e8ff'];
+
+  // Build pivot: unit → [count per bucket]
+  const units=[...new Set(fil.map(r=>r.u))].sort();
+  const pivot={};
+  units.forEach(u=>{ pivot[u]=[0,0,0,0,0]; });
+  fil.forEach(r=>{ pivot[r.u][getBucket(r)]++; });
+
+  // Column totals
+  const colTot=[0,0,0,0,0];
+  fil.forEach(r=>{ colTot[getBucket(r)]++; });
+
+  const tbody=document.getElementById('pivotBody');
+  const tfoot=document.getElementById('pivotFoot');
+  if(!tbody)return;
+  tbody.innerHTML='';
+
+  // Highlight active bucket column
+  ['ph0','ph1','ph2','ph3','ph4'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    if(abk===i){
+      el.style.outline='3px solid #fbbf24';
+      el.style.outlineOffset='-3px';
+    } else {
+      el.style.outline='none';
+    }
+  });
+
+  units.forEach((u,ri)=>{
+    const counts=pivot[u];
+    const rowTotal=counts.reduce((s,c)=>s+c,0);
+    const tr=document.createElement('tr');
+    tr.style.borderBottom='1px solid #f3e8ff';
+    tr.onmouseenter=()=>tr.style.background='var(--pp)';
+    tr.onmouseleave=()=>tr.style.background='';
+
+    // Unit name cell
+    const tdU=document.createElement('td');
+    tdU.style.cssText='padding:8px 14px;font-size:12px;font-weight:700;color:var(--pd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;cursor:pointer;';
+    tdU.title=u; tdU.textContent=u;
+    tdU.onclick=()=>{ document.getElementById('fU').value=u; applyF(); document.getElementById('tbl').scrollIntoView({behavior:'smooth',block:'start'}); };
+    tdU.onmouseenter=()=>tdU.style.color='var(--pl)';
+    tdU.onmouseleave=()=>tdU.style.color='var(--pd)';
+    tr.appendChild(tdU);
+
+    // Count cells per bucket
+    counts.forEach((cnt,bi)=>{
+      const td=document.createElement('td');
+      const isActive=abk===bi;
+      td.style.cssText=`padding:8px 10px;text-align:center;font-size:13px;cursor:${cnt>0?'pointer':'default'};border-left:1px solid #f3e8ff;background:${isActive&&cnt>0?bkBg[bi]:'transparent'};`;
+      if(cnt>0){
+        td.innerHTML=`<span style="background:${bkBg[bi]};color:${bkColors[bi]};font-weight:700;padding:2px 10px;border-radius:20px;font-size:12px;">${cnt}</span>`;
+        td.onclick=()=>{
+          abk=bi;
+          document.getElementById('fU').value=u;
+          applyF();
+          document.getElementById('tbl').scrollIntoView({behavior:'smooth',block:'start'});
+        };
+      } else {
+        td.innerHTML=`<span style="color:#d1d5db;font-size:11px;">—</span>`;
+      }
+      tr.appendChild(td);
+    });
+
+    // Row total
+    const tdT=document.createElement('td');
+    tdT.style.cssText='padding:8px 10px;text-align:center;font-weight:700;color:var(--pm);border-left:2px solid var(--br);font-size:13px;';
+    tdT.textContent=rowTotal;
+    tr.appendChild(tdT);
+
+    tbody.appendChild(tr);
+  });
+
+  // Footer: totals row
+  tfoot.innerHTML='';
+  const trF=document.createElement('tr');
+  trF.style.cssText='background:linear-gradient(135deg,var(--pd),var(--pm));color:#fff;font-weight:700;';
+  const tdFL=document.createElement('td');
+  tdFL.style.cssText='padding:9px 14px;font-size:13px;border-radius:0 0 0 8px;';
+  tdFL.textContent='รวมทั้งหมด';
+  trF.appendChild(tdFL);
+  colTot.forEach((c,bi)=>{
+    const td=document.createElement('td');
+    td.style.cssText='padding:9px 10px;text-align:center;font-size:14px;border-left:1px solid rgba(255,255,255,.15);';
+    td.textContent=c;
+    trF.appendChild(td);
+  });
+  const tdFT=document.createElement('td');
+  tdFT.style.cssText='padding:9px 10px;text-align:center;font-size:14px;border-left:2px solid rgba(255,255,255,.25);';
+  tdFT.textContent=fil.length;
+  trF.appendChild(tdFT);
+  tfoot.appendChild(trF);
+}
+
+function renderTable(d){
+  const tbody=document.getElementById('tb');
+  tbody.innerHTML='';
+  const tt=document.getElementById('utt');
+  const sorted=[...d].sort((a,b)=>{
+    const pa=a.a>0?a.r/a.a:0,pb=b.a>0?b.r/b.a:0;return pa-pb;
+  });
+  sorted.forEach((r,i)=>{
+    const p=r.a>0?(r.r/r.a)*100:0;
+    const iz=p===0;
+    const pc=p===0?'#dc2626':p<=20?'#b45309':p<=50?'#c2410c':p<=75?'#15803d':'#6b21a8';
+    const fc=p===0?'#fecaca':p<=20?'#fde047':p<=50?'#fdba74':p<=75?'#86efac':'#c084fc';
+    const tr=document.createElement('tr');
+    tr.className=iz?'z0':'';
+    tr.innerHTML=`
+      <td style="color:var(--tg);font-size:12px">${i+1}</td>
+      <td style="font-size:13px;font-weight:600;color:var(--pd);max-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${r.u}">${r.u}</td>
+      <td style="font-family:monospace;font-size:13px;color:var(--pm);white-space:nowrap">${r.c}</td>
+      <td style="font-size:13px;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${r.n}">${r.n}</td>
+      <td><span style="background:${r.f==='โครงการ'?'var(--pp)':'var(--yp)'};color:${r.f==='โครงการ'?'var(--pm)':'#b45309'};padding:1px 7px;border-radius:20px;font-size:12px;font-weight:700">${r.f}</span></td>
+      <td style="text-align:right;font-weight:600;font-size:13px;white-space:nowrap">${fmtN(r.a)}</td>
+      <td style="text-align:right;font-size:13px;white-space:nowrap">${fmtN(r.r)}</td>
+      <td style="text-align:right;font-size:13px;white-space:nowrap;color:${r.l>0?'#15803d':'var(--tg)'}">${fmtN(r.l)}</td>
+      <td>
+        <div class="pb-wrap">
+          <div class="pb-trk" style="background:${fc}88"><div class="pb-fill" style="width:${Math.min(p,100).toFixed(1)}%;background:${pc}"></div></div>
+          <span class="pl" style="color:${pc}">${p.toFixed(1)}%</span>
+          ${iz?'<span class="zbdg">0%</span>':''}
+        </div>
+      </td>`;
+    // hover tooltip on last cell
+    const last=tr.querySelector('td:last-child');
+    last.addEventListener('mouseenter',e=>{tt.textContent='📌 '+r.u;tt.style.display='block';});
+    last.addEventListener('mousemove',e=>{tt.style.left=(e.clientX+12)+'px';tt.style.top=(e.clientY-28)+'px';});
+    last.addEventListener('mouseleave',()=>{tt.style.display='none';});
+    tbody.appendChild(tr);
+  });
+}
+
+// Format helpers
+function fmtN(n){return n.toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtM(n){
+  if(n>=1e6)return (n/1e6).toFixed(2)+'M';
+  if(n>=1e3)return (n/1e3).toFixed(1)+'K';
+  return n.toFixed(0);
+}
+function fmtS(n){
+  if(n>=1e6)return (n/1e6).toFixed(2)+'M';
+  if(n>=1e3)return (n/1e3).toFixed(1)+'K';
+  return n.toFixed(0);
+}
+</script>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
